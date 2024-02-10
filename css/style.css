@@ -1,5 +1,6 @@
 body {
     text-align: center;
+    margin-bottom: auto;
     background-color: gray;
     color: white;
     font-family: 'Courier New', Courier, monospace;
@@ -10,7 +11,7 @@ h1 {
 }
 
 h2 {
-    color: darkred
+    color: darkred;
 }
 
 header {
