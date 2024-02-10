@@ -18,7 +18,8 @@ h2 {
     top: 0;
     width: 100%;
     padding: 20px;
-    z-index:500;
+    z-index: 500;
+    color: black
 }
 
 #footer {
@@ -27,6 +28,7 @@ h2 {
     width: 100%;
     padding: 20px;
     z-index: 500;
+    background-color: #1f1e33;
 }
 
 #content {
