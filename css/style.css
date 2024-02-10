@@ -32,6 +32,8 @@ footer {
 }
 
 #content {
+    padding-top: 5%;
+    padding-bottom: 5%;
     margin-top: auto;
     margin-bottom: auto;
 }
