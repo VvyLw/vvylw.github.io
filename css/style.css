@@ -1,0 +1,23 @@
+body {
+    background-color:black;
+    color:white;
+    font-family: sans-serif;
+}
+
+h1 {
+    color:indigo;
+}
+
+header {
+    text-align: center;
+    position: fixed;
+}
+
+footer {
+    text-align: center;
+    position: fixed;
+}
+
+#private {
+    color:#1f1e33;
+}
