@@ -17,10 +17,7 @@ h2 {
     position: fixed;
     top: 0;
     width: 100%;
-    box-sizing: border-box;
-    height: 100px;
     padding: 20px;
-    background-color: white;
     z-index:500;
 }
 
@@ -28,10 +25,7 @@ h2 {
     position: fixed;
     bottom: 0;
     width: 100%;
-    box-sizing: border-box;
-    height: 100px;
     padding: 20px;
-    background-color: black;
     z-index: 500;
 }
 
