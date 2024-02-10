@@ -16,7 +16,7 @@ h2 {
 #header {
     position: fixed;
     top: 0;
-    width: 400px;
+    width: 100%;
     box-sizing: border-box;
     height: 100px;
     padding: 20px;
@@ -27,7 +27,7 @@ h2 {
 #footer {
     position: fixed;
     bottom: 0;
-    width: 400px;
+    width: 100%;
     box-sizing: border-box;
     height: 100px;
     padding: 20px;
