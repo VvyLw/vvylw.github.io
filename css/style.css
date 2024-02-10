@@ -1,6 +1,5 @@
 body {
     text-align: center;
-    margin-bottom: auto;
     background-color: gray;
     color: white;
     font-family: 'Courier New', Courier, monospace;
@@ -30,6 +29,11 @@ footer {
     height: 35px;
     padding: 10px;
     position: fixed;
+}
+
+#content {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 #private {
