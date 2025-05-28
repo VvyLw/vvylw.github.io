@@ -1,5 +1,5 @@
 body {
-  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=1500&q=80') no-repeat center center fixed;
+  background: url('img/hEa9OGbN.png') no-repeat center center fixed;
   background-size: cover;
   font-family: 'Segoe UI', 'Meiryo', sans-serif;
   margin: 0;
@@ -13,7 +13,7 @@ body {
   margin: 0 auto;
 }
 .profile {
-  background: rgba(20, 20, 30, 0.85);
+  background: rgba(105, 105, 221, 0.85);
   border-radius: 20px;
   padding: 24px;
   width: 420px;
@@ -40,7 +40,7 @@ body {
 }
 .field-label {
   min-width: 60px;
-  color: #aaa;
+  color: #ccc;
   font-size: 0.95em;
   letter-spacing: 0.05em;
 }
@@ -53,10 +53,15 @@ body {
   border: none;
   font-size: 1.1em;
 }
+.field-value.wide {
+  min-width: 180px;
+  flex: 2;
+}
 .sns-icons {
   display: flex;
   gap: 10px;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin: 6px 0;
 }
 .sns-icon {
