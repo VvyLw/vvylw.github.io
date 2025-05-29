@@ -1,9 +1,16 @@
+html, body {
+    height: 100%;
+    min-height: 100%;
+}
+
 body {
     text-align: center;
     background: linear-gradient(black, gray, white);
     color: black;
     font-family: Georgia, 'Times New Roman', Times, serif;
     min-height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
