@@ -98,7 +98,7 @@ body {
   height: 100%;
   border-radius: 8px;
   width: 0%;
-  transition: width 0.3s ease-in-out;
+  transition: width 0.1618s;
 }
 .statuses {
   display: flex;
@@ -161,6 +161,7 @@ body {
 }
 .intro-imgs {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   justify-content: flex-start;
   margin-top: 12px;
@@ -195,6 +196,14 @@ body {
   max-height: 90vh;
   border-radius: 18px;
   box-shadow: 0 4px 32px #000a;
+}
+.avatar-name {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  text-shadow: 0 2px 4px #1f1e33;
 }
 #img-modal:after {
   content: "✕";
