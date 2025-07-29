@@ -57,6 +57,20 @@ body {
   min-width: 180px;
   flex: 2;
 }
+.lang-current {
+    color: #333;
+    font-weight: 500;
+}
+.lang-switch {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+.lang-switch:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
 .sns-icons {
   display: flex;
   gap: 10px;
@@ -84,6 +98,7 @@ body {
   height: 100%;
   border-radius: 8px;
   width: 29%;
+  transition: width 0.8s ease-in-out;
 }
 .statuses {
   display: flex;
