@@ -178,6 +178,9 @@ body {
 .intro-img.top {
   object-position: top;
 }
+.intro-img.right {
+  object-position: right;
+}
 /* Lightbox modal */
 #img-modal {
   display: none;
