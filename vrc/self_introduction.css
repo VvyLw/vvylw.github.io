@@ -209,8 +209,10 @@ body {
 }
 .avatar-name {
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 64px;
   font-weight: bold;
+  font-family: Gabriola;
+  font-style: italic;
   margin-top: 20px;
   text-align: center;
   text-shadow: 0 2px 4px #1f1e33;
