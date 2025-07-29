@@ -98,7 +98,7 @@ body {
   height: 100%;
   border-radius: 8px;
   width: 0%;
-  transition: width 0.1618s;
+  transition: width 0.296s;
 }
 .statuses {
   display: flex;
@@ -168,8 +168,8 @@ body {
 }
 .intro-img {
   position: static;
-  width: 120px;
-  height: 120px;
+  width: 125px;
+  height: 125px;
   border-radius: 16px;
   object-fit: cover;
   box-shadow: 0 2px 12px #0008;
