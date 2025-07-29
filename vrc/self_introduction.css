@@ -97,7 +97,7 @@ body {
   background: linear-gradient(90deg, #4faaff, #aafff7);
   height: 100%;
   border-radius: 8px;
-  width: 0%;
+  width: 0.1618%;
   transition: width 0.296s;
 }
 .statuses {
@@ -175,11 +175,26 @@ body {
   box-shadow: 0 2px 12px #0008;
   cursor: pointer;
 }
+.intro-img.center {
+  object-position: center;
+  object-fit: cover;
+  transform: scale(1.2);
+  overflow: hidden;
+}
 .intro-img.top {
   object-position: top;
 }
+.intro-img.top-zoom {
+  object-position: top;
+  object-fit: cover;
+  transform: scale(1.2);
+  overflow: hidden;
+}
 .intro-img.right {
   object-position: right;
+  object-fit: cover;
+  transform: scale(1.2);
+  overflow: hidden;
 }
 /* Lightbox modal */
 #img-modal {

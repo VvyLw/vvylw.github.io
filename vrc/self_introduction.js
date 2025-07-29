@@ -1,6 +1,5 @@
 if(window.location.pathname.includes('/ja/')) {
     const micBar = document.getElementById('micBar');
-    const percentageText = document.getElementById('percentageText');
 
     const updateGauge = () => {
         const randomPercentage = Math.floor(Math.random() * 101);
