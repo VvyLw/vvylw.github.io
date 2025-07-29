@@ -97,7 +97,7 @@ body {
   background: linear-gradient(90deg, #4faaff, #aafff7);
   height: 100%;
   border-radius: 8px;
-  width: 0.296%;
+  width: 3%;
   transition: width 0.296s;
 }
 .statuses {
@@ -174,13 +174,9 @@ body {
   object-fit: cover;
   box-shadow: 0 2px 12px #0008;
   cursor: pointer;
-  object-position: center;
 }
 .intro-img.top {
   object-position: top;
-}
-.intro-img.top-zoom {
-  object-position: 40% 20%;
 }
 .intro-img.right {
   object-position: right;
@@ -206,8 +202,8 @@ body {
   max-height: 90vh;
 }
 #img-modal img {
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 75vw;
+  max-height: 75vh;
   border-radius: 18px;
   box-shadow: 0 4px 32px #000a;
 }
