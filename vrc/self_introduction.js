@@ -30,28 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('img-modal').addEventListener('click', (e) => e.currentTarget.classList.remove('active'));
 
-
-    const currentLangElement = document.getElementById('currentLang');
     const switchLangElement = document.getElementById('switchLang');
     
-    let currentLanguage = 'ja';
-    
     switchLangElement.addEventListener('click', () => {
-        if (currentLanguage === 'ja') {
-            window.location.href = urls.en;
-        } else {
-            window.location.href = urls.ja;
-        }
-    });
-
-    const detectLanguageFromURL = () => {
         const currentURL = window.location.href;
         if (currentURL.includes('/en/')) {
-            currentLanguage = 'en';
+            window.location.href = urls.ja;
         } else {
-            currentLanguage = 'ja';
+            window.location.href = urls.en;
         }
-    }
-
-    detectLanguageFromURL();
+    });
 });
