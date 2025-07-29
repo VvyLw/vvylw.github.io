@@ -1,13 +1,15 @@
-const micBar = document.getElementById('micBar');
-const percentageText = document.getElementById('percentageText');
+if(window.location.pathname.includes('/ja/')) {
+    const micBar = document.getElementById('micBar');
+    const percentageText = document.getElementById('percentageText');
 
-const updateGauge = () => {
-    const randomPercentage = Math.floor(Math.random() * 101);
-    micBar.style.width = randomPercentage + '%';
-};
+    const updateGauge = () => {
+        const randomPercentage = Math.floor(Math.random() * 101);
+        micBar.style.width = randomPercentage + '%';
+    };
 
-setInterval(updateGauge, 100);
-updateGauge();
+    setInterval(updateGauge, 100);
+    updateGauge();
+}
 
 const urls = {
     ja: 'https://vvylw.github.io/vrc/ja/self_introduction.html',
