@@ -9,14 +9,23 @@ const updateGauge = () => {
 setInterval(updateGauge, 100);
 updateGauge();
 
+const urls = {
+    ja: 'https://vvylw.github.io/vrc/ja/self_introduction.html',
+    en: 'https://vvylw.github.io/vrc/en/self_introduction.html'
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.intro-img').forEach((img) => {
         img.addEventListener('click', () => {
             const modal = document.getElementById('img-modal');
             modal.classList.add('active');
-            const modalImg = modal.querySelector('img');
+            const modalContent = modal.querySelector('.modal-content');
+            const modalImg = modalContent.querySelector('img');
+            const avatarNameDiv = modalContent.querySelector('.avatar-name');
             modalImg.src = img.src;
             modalImg.alt = img.alt;
+            const avatarName = img.getAttribute('data-avatar-name');
+            avatarNameDiv.textContent = avatarName;
         });
     });
     document.getElementById('img-modal').addEventListener('click', (e) => e.currentTarget.classList.remove('active'));
@@ -26,21 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const switchLangElement = document.getElementById('switchLang');
     
     let currentLanguage = 'ja';
-    
-    const urls = {
-        ja: 'https://vvylw.github.io/vrc/ja/self_introduction.html',
-        en: 'https://vvylw.github.io/vrc/en/self_introduction.html'
-    };
-    
-    const updateLanguageDisplay = () => {
-        if (currentLanguage === 'ja') {
-            currentLangElement.textContent = '日本語';
-            switchLangElement.textContent = '英語';
-        } else {
-            currentLangElement.textContent = 'English';
-            switchLangElement.textContent = 'Japanese';
-        }
-    }
     
     switchLangElement.addEventListener('click', () => {
         if (currentLanguage === 'ja') {
@@ -60,5 +54,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     detectLanguageFromURL();
-    updateLanguageDisplay();
 });

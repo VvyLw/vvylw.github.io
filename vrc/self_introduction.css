@@ -191,6 +191,13 @@ body {
 #img-modal.active {
   display: flex;
 }
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 90vw;
+  max-height: 90vh;
+}
 #img-modal img {
   max-width: 90vw;
   max-height: 90vh;
@@ -223,5 +230,9 @@ body {
   }
   .intro-section {
     min-width: unset;
+  }
+  .avatar-name {
+    font-size: 1.2rem;
+    margin-top: 15px;
   }
 }
