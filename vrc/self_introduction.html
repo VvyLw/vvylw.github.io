@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>自己紹介シート</title>
   <link rel="stylesheet" href="self_introduction.css">
+  <script src="self_introduction.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -38,7 +39,7 @@
       <div class="field-group">
         <span class="field-label">VC率</span>
         <div class="mic-bar-bg">
-          <div class="mic-bar"></div>
+          <div class="mic-bar" id="micBar"></div>
         </div>
         <span style="font-size:0.95em; color:#aaa;">29%</span>
       </div>
@@ -64,7 +65,7 @@
     <div class="intro-section">
       <div class="intro-text">
         うお、わーはやです<br>
-        Binahちゃんと萌ちゃんとキプフェル使ってます<br>
+        使用アバター: ビナア, 萌, キプフェル, シフォン<br>
         競プロもたまにしてます<br>
         V感はないです<br>
         よろしくね～
@@ -77,24 +78,8 @@
       </div>
     </div>
   </div>
-  <!-- Lightbox Modal -->
   <div id="img-modal">
     <img src="" alt="拡大画像">
   </div>
-  <script>
-    // 画像クリックでモーダル表示
-    document.querySelectorAll('.intro-img').forEach(img => {
-      img.addEventListener('click', function() {
-        const modal = document.getElementById('img-modal');
-        modal.classList.add('active');
-        modal.querySelector('img').src = this.src;
-        modal.querySelector('img').alt = this.alt;
-      });
-    });
-    // モーダルクリックで閉じる
-    document.getElementById('img-modal').addEventListener('click', function(e) {
-      this.classList.remove('active');
-    });
-  </script>
 </body>
 </html>
