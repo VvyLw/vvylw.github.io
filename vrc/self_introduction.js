@@ -4,10 +4,9 @@ const percentageText = document.getElementById('percentageText');
 const updateGauge = () => {
     const randomPercentage = Math.floor(Math.random() * 101);
     micBar.style.width = randomPercentage + '%';
-    percentageText.textContent = randomPercentage + '%';
 };
 
-setInterval(updateGauge, 500);
+setInterval(updateGauge, 100);
 updateGauge();
 
 document.addEventListener('DOMContentLoaded', () => {
