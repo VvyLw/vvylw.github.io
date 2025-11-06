@@ -29,6 +29,10 @@ body {
   align-items: center;
   max-height: 100vh;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+.profile::-webkit-scrollbar {
+  display: none;
 }
 .profile-img {
   width: 180px;
@@ -161,6 +165,10 @@ body {
   max-height: 100vh;
   position: relative;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+.intro-section::-webkit-scrollbar {
+  display: none;
 }
 .intro-text {
   font-size: 1.15em;
