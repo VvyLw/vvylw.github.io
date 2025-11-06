@@ -4,6 +4,8 @@ body {
   font-family: 'Segoe UI', 'Meiryo', sans-serif;
   margin: 0;
   color: #fff;
+  overflow: hidden;
+  height: 100%;
 }
 .container {
   display: flex;
