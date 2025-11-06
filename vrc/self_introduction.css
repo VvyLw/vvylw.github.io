@@ -9,14 +9,10 @@ body {
 }
 .container {
   display: flex;
-  flex-direction: row;
   gap: 24px;
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
-  overflow-y: auto;
-  max-height: 100vh;
-  box-sizing: border-box;
 }
 .profile {
   background: rgba(105, 105, 221, 0.85);
@@ -28,6 +24,8 @@ body {
   flex-direction: column;
   gap: 18px;
   align-items: center;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 .profile-img {
   width: 180px;
@@ -159,6 +157,7 @@ body {
   min-width: 320px;
   max-height: 100vh;
   position: relative;
+  overflow-y: auto;
 }
 .intro-text {
   font-size: 1.15em;
