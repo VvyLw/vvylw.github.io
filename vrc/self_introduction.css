@@ -13,6 +13,9 @@ body {
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .profile {
   background: rgba(105, 105, 221, 0.85);
@@ -24,8 +27,8 @@ body {
   flex-direction: column;
   gap: 18px;
   align-items: center;
-  overflow-y: auto;
   max-height: 100vh;
+  overflow-y: auto;
 }
 .profile-img {
   width: 180px;
