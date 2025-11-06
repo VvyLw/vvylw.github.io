@@ -4,8 +4,6 @@ body {
   font-family: 'Segoe UI', 'Meiryo', sans-serif;
   margin: 0;
   color: #fff;
-}
-html, body {
   overflow: hidden;
   height: 100%;
 }
@@ -15,6 +13,8 @@ html, body {
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
+  overflow-y: auto;
+  height: 100%;
 }
 .profile {
   background: rgba(105, 105, 221, 0.85);
@@ -153,9 +153,10 @@ html, body {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
   min-width: 320px;
   position: relative;
+  height: 100%;
 }
 .intro-text {
   font-size: 1.15em;
