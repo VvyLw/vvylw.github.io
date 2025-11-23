@@ -27,6 +27,8 @@ body {
   flex-direction: column;
   gap: 18px;
   align-items: center;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 .profile::-webkit-scrollbar {
   display: none;
