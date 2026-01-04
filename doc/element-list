@@ -1,5 +1,3 @@
-aoj
-codeforces
 library.core
 library.core.interfaces
 library.core.interfaces.lambda
@@ -16,4 +14,3 @@ library.math
 library.math.largeprime
 library.math.prefixsum
 library.other
-yukicoder
