@@ -194,6 +194,9 @@ body {
 .intro-img.top {
   object-position: top;
 }
+.intro-img.left {
+  object-position: left;
+}
 .intro-img.right {
   object-position: right;
 }
