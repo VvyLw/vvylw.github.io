@@ -1,11 +1,11 @@
 body {
-  background: url('img/Binah_Inverted_BackGround.webp?v=2') no-repeat center center fixed;
   background-size: cover;
   font-family: 'Segoe UI', 'Meiryo', sans-serif;
   margin: 0;
   color: #fff;
   overflow: hidden;
   height: 100%;
+  transition: background-image 1s ease-in-out;
 }
 .container {
   display: flex;
