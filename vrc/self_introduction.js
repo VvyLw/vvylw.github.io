@@ -50,25 +50,78 @@ const backgroundImages = [
 ];
 
 let currentBgIndex = 0;
+let activeSlide = 0;
+let bgSlides = [];
 
-const rotateBackground = () => {
-    if (backgroundImages.length === 0) return;
-    
-    const bgPath = window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/')
-        ? '../' + backgroundImages[currentBgIndex]
-        : backgroundImages[currentBgIndex];
-    
-    document.body.style.backgroundImage = `url('${bgPath}')`;
-    currentBgIndex = (currentBgIndex + 1) % backgroundImages.length;
+const hasLangPrefix = () => window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/');
+const getBgPath = (imagePath) => hasLangPrefix() ? `../${imagePath}` : imagePath;
+
+const preloadImage = (src) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.src = src;
+});
+
+const getRandomIndex = (exclude) => {
+    if (backgroundImages.length === 0) return 0;
+    if (backgroundImages.length === 1) return 0;
+    let next = Math.floor(Math.random() * backgroundImages.length);
+    while (next === exclude) {
+        next = Math.floor(Math.random() * backgroundImages.length);
+    }
+    return next;
+};
+
+const showBackgroundSlide = async (nextIndex) => {
+    if (!bgSlides.length) return;
+
+    const nextPath = getBgPath(backgroundImages[nextIndex]);
+    await preloadImage(nextPath);
+
+    const hiddenSlide = bgSlides[activeSlide ^ 1];
+    const visibleSlide = bgSlides[activeSlide];
+
+    hiddenSlide.style.backgroundImage = `url('${nextPath}')`;
+    hiddenSlide.classList.add('visible');
+    visibleSlide.classList.remove('visible');
+
+    activeSlide ^= 1;
+    currentBgIndex = nextIndex;
+};
+
+const initializeBackgroundSlideshow = async () => {
+    if (!backgroundImages.length) return;
+
+    const slideshowContainer = document.createElement('div');
+    slideshowContainer.className = 'background-slideshow';
+
+    const slideA = document.createElement('div');
+    const slideB = document.createElement('div');
+    slideA.className = 'bg-slide';
+    slideB.className = 'bg-slide';
+
+    slideshowContainer.append(slideA, slideB);
+    document.body.prepend(slideshowContainer);
+
+    bgSlides = [slideA, slideB];
+
+    const firstIndex = getRandomIndex(-1);
+    const firstPath = getBgPath(backgroundImages[firstIndex]);
+    await preloadImage(firstPath);
+
+    slideA.style.backgroundImage = `url('${firstPath}')`;
+    slideA.classList.add('visible');
+    currentBgIndex = firstIndex;
+    activeSlide = 0;
+
+    setInterval(() => {
+        const nextIndex = getRandomIndex(currentBgIndex);
+        showBackgroundSlide(nextIndex);
+    }, 20000);
 };
 
 // 初回背景設定（画像がある場合）
-if (backgroundImages.some(img => img)) {
-    rotateBackground();
-}
-
-// 20秒置きに背景を切り替え
-setInterval(rotateBackground, 20000);
+initializeBackgroundSlideshow();
 
 if(window.location.pathname.includes('/ja/')) {
     const micBar = document.getElementById('micBar');
