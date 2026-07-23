@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アバター紹介カードメーカー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;700;800&family=Noto+Sans+SC:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --ink:#1b1b2f;
+    --muted:#8a8aa3;
+    --pink:#ff3d80;
+    --mint:#00c896;
+    --yellow:#ffc93c;
+    --lavender:#f3f0ff;
+    --card-bg:#fffdfb;
+    --hazard-red:#e8291c;
+    --hazard-yellow:#ffd400;
+    --hazard-dark:#14141c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Zen Kaku Gothic New','Noto Sans KR','Noto Sans SC', sans-serif;
+    background:
+      radial-gradient(circle at 12% 8%, #ffe1ee 0%, transparent 45%),
+      radial-gradient(circle at 90% 12%, #d8fff0 0%, transparent 40%),
+      var(--lavender);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .topbar{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    padding:20px 24px 10px;
+    gap:8px;
+  }
+  .topbar-center{ text-align:center; }
+  .topbar h1{
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:800;
+    font-size:24px;
+    margin:0 0 4px;
+    letter-spacing:.02em;
+  }
+  .topbar p{ margin:0; color:var(--muted); font-size:12.5px; }
+  .lang-select-wrap{ justify-self:end; }
+  #langSelect{
+    border:1.5px solid #e3e0f5;
+    border-radius:10px;
+    padding:7px 10px;
+    font-size:13px;
+    font-family:inherit;
+    background:#fff;
+    color:var(--ink);
+    cursor:pointer;
+  }
+
+  .app{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    justify-content:center;
+    padding:16px 24px 60px;
+    max-width:1220px;
+    margin:0 auto;
+  }
+  .form-panel{
+    flex:1 1 420px;
+    max-width:460px;
+    background:#fff;
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 10px 30px rgba(30,20,60,.08);
+  }
+  .preview-panel{
+    flex:0 0 auto;
+    position:sticky;
+    top:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+
+  /* --- toggles (mode / orientation) --- */
+  .toggle-row{ display:flex; gap:10px; margin-bottom:14px; }
+  .seg-toggle{
+    display:flex;
+    background:var(--lavender);
+    border-radius:999px;
+    padding:4px;
+    gap:4px;
+    flex:1;
+  }
+  .seg-toggle button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:9px 6px;
+    border-radius:999px;
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--muted);
+    transition:.2s;
+    white-space:nowrap;
+  }
+  .seg-toggle button.active{ background:var(--ink); color:#fff; }
+  .seg-toggle button[data-mode="giant"].active{ background:var(--hazard-red); }
+  .seg-toggle.orient{ flex:0 0 150px; }
+
+  /* --- form --- */
+  fieldset{ border:none; padding:0; margin:0 0 20px; }
+  legend{
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--pink);
+    padding:0 0 8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .giant-legend legend{ color:var(--hazard-red); }
+  .field{ margin-bottom:12px; }
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .field input[type="text"],
+  .field input[type="number"],
+  .field textarea,
+  .field select{
+    width:100%;
+    padding:9px 11px;
+    border:1.5px solid #ecebf5;
+    border-radius:10px;
+    font-family:inherit;
+    font-size:14px;
+    background:#fbfbfe;
+    color:var(--ink);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    outline:2px solid var(--pink);
+    outline-offset:1px;
+    background:#fff;
+  }
+  .field textarea{ resize:vertical; min-height:70px; }
+  .row3{ display:flex; gap:8px; }
+  .row3 > div{ flex:1; }
+
+  /* --- dropzones --- */
+  .dropzone{
+    border:2px dashed #d9d6ec;
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+    cursor:pointer;
+    font-size:12.5px;
+    color:var(--muted);
+    background:#fbfbfe;
+    transition:.15s;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .dropzone.dragover{ border-color:var(--pink); background:#fff0f6; color:var(--pink); }
+  .dropzone img.dz-thumb{ width:56px; height:56px; object-fit:cover; border-radius:10px; }
+  .expr-grid{ display:flex; gap:8px; }
+  .expr-grid .dropzone{ flex:1; padding:10px; position:relative; min-height:100px; justify-content:center; }
+  .expr-grid .dz-thumb{ width:100%; height:92px; border-radius:10px; }
+  .expr-grid .dz-thumb-wrap{ position:relative; width:100%; }
+  .dz-remove{
+    position:absolute;
+    top:-8px; right:-8px;
+    width:24px; height:24px;
+    border-radius:50%;
+    border:2px solid #fff;
+    background:var(--pink);
+    color:#fff;
+    font-size:13px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    z-index:2;
+  }
+  .dz-remove:hover{ background:#e02c6d; }
+
+  .hint{ font-size:11px; color:var(--muted); margin-top:2px; }
+
+  .recalc-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1.5px solid var(--hazard-red);
+    color:var(--hazard-red);
+    background:#fff;
+    font-weight:700;
+    font-size:12.5px;
+    padding:7px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    margin:2px 0 14px;
+  }
+  .recalc-btn:hover{ background:#ffecea; }
+
+  .complete-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--pink),#ff7ab0);
+    color:#fff;
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:800;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(255,61,128,.35);
+  }
+  .complete-btn.giant{ background:linear-gradient(135deg,var(--hazard-red),#ff6a3d); box-shadow:0 8px 20px rgba(232,41,28,.4); }
+  .complete-btn:active{ transform:translateY(1px); }
+  .status-msg{ text-align:center; font-size:12px; color:var(--muted); min-height:16px; margin-top:6px; }
+
+  /* ================= CARD ================= */
+  .card-scale-wrap{ width:fit-content; }
+  .card{
+    width:440px;
+    border-radius:26px;
+    background:var(--card-bg);
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 20px 45px rgba(30,20,60,.18);
+    border:3px solid #fff;
+    transition:width .25s, background .25s;
+  }
+  .card.landscape{ width:560px; }
+  .card.giant{ background:var(--hazard-dark); color:#f4f4f8; }
+  .card[data-tier="final"]{ background:#050505; }
+  /* ★50以上(終焉宣言): TERAバッジ/リボンと警報バーの配色を反転させる */
+  .card[data-tier="final"] .mega-badge,
+  .card[data-tier="final"] .ribbon{
+    background:#ffffff;
+    color:#141414;
+  }
+  .card[data-tier="final"] .hazard-bar{
+    background:repeating-linear-gradient(45deg,#000000 0 16px, #ffffff 16px 32px);
+  }
+  .card[data-tier="final"] .hazard-bar span{
+    background:#ffffff;
+    color:#000000;
+  }
+
+  .hazard-bar{
+    display:none;
+    height:26px;
+    margin:-20px -20px 14px;
+    background:repeating-linear-gradient(45deg,var(--tier-accent-visible, var(--hazard-yellow)) 0 16px, var(--hazard-dark) 16px 32px);
+    align-items:center;
+    justify-content:center;
+  }
+  .card.giant .hazard-bar{ display:flex; }
+  .hazard-bar span{
+    background:var(--hazard-dark);
+    color:var(--tier-accent-visible, var(--hazard-yellow));
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:800;
+    font-size:11px;
+    padding:2px 10px;
+    border-radius:4px;
+    letter-spacing:.05em;
+  }
+
+  .photo-wrap{ position:relative; margin-bottom:14px; }
+  .photo-frame{
+    width:100%;
+    aspect-ratio:4/5;
+    border-radius:18px;
+    background:#eeecf8;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(-1.2deg);
+    box-shadow:0 8px 18px rgba(30,20,60,.12);
+    border:5px solid #fff;
+    transition:aspect-ratio .25s;
+  }
+  .card.landscape .photo-frame{ aspect-ratio:5/4; }
+  .card.giant .photo-frame{ border:5px solid var(--tier-accent, var(--hazard-red)); border-radius:10px; transform:none; }
+  .photo-frame img{ width:100%; height:100%; object-fit:cover; }
+  .photo-frame .ph-empty{ color:#b9b6d6; font-size:13px; font-family:'M PLUS Rounded 1c'; }
+
+  .sticker-row{ position:absolute; bottom:-12px; right:8px; display:flex; gap:6px; }
+  .sticker{ width:74px; height:74px; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 10px rgba(30,20,60,.2); overflow:hidden; background:#fff; }
+  .sticker:nth-child(1){ transform:rotate(-8deg); }
+  .sticker:nth-child(2){ transform:rotate(5deg); }
+  .sticker:nth-child(3){ transform:rotate(-4deg); }
+  .sticker img{ width:100%; height:100%; object-fit:cover; }
+  .card.giant .sticker{ border-color:var(--tier-accent, var(--hazard-yellow)); }
+
+  .name-banner{ margin:24px 0 10px; text-align:center; }
+  .name-text{
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:800;
+    font-size:24px;
+    display:inline-block;
+    padding:4px 18px;
+    border-radius:999px;
+    background:linear-gradient(120deg,#fff0f6,#eafff6);
+  }
+  .card.giant .name-text{ background:linear-gradient(120deg, var(--tier-dark-bg, #2a0d0d), #1c1c26); color:#fff; }
+  .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; }
+  .card.giant .subtitle{ color:#ff9a86; }
+
+  .quote-bubble{
+    position:relative;
+    background:var(--mint);
+    color:#fff;
+    padding:10px 14px;
+    border-radius:14px;
+    font-size:13px;
+    font-weight:700;
+    margin:12px 6px 18px;
+    text-align:center;
+  }
+  .quote-bubble::after{
+    content:"";
+    position:absolute; left:50%; bottom:-8px; margin-left:-6px;
+    border-width:8px 6px 0 6px; border-style:solid;
+    border-color:var(--mint) transparent transparent transparent;
+  }
+  .card.giant .quote-bubble{ background:var(--tier-accent, var(--hazard-red)); }
+  .card.giant .quote-bubble::after{ border-color:var(--tier-accent, var(--hazard-red)) transparent transparent transparent; }
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    background:#faf9ff;
+    border:1.5px dashed #ddd9f2;
+    border-radius:14px;
+    padding:12px;
+    margin-bottom:14px;
+  }
+  .card.giant .stat-grid{ background:#1c1c26; border-color:#3a3a48; }
+  .stat-chip{ font-size:12px; }
+  .stat-chip .k{ color:var(--muted); font-size:10.5px; font-weight:700; }
+  .card.giant .stat-chip .k{ color:#9d9dae; }
+  .stat-chip .v{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:14px; }
+  .stat-chip.full{ grid-column:1 / -1; }
+
+  .desc-block{ margin-bottom:6px; }
+  .desc-eyebrow{ font-family:'M PLUS Rounded 1c'; font-size:10.5px; font-weight:800; color:var(--pink); letter-spacing:.1em; margin-bottom:4px; }
+  .card.giant .desc-eyebrow{ color:var(--tier-accent-visible, var(--hazard-yellow)); }
+  .desc-text{ font-size:13px; line-height:1.7; white-space:pre-wrap; word-break:break-word; }
+
+  .danger-block{
+    display:none;
+    margin:16px 0 14px;
+    background:linear-gradient(135deg, var(--tier-dark-bg, #2a0d0d), #14141c);
+    border:1.5px solid var(--tier-accent, var(--hazard-red));
+    border-radius:14px;
+    padding:12px 14px;
+  }
+  .card.giant .danger-block{ display:block; }
+  .danger-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .danger-head .lbl{ font-family:'M PLUS Rounded 1c'; font-size:11px; font-weight:800; color:var(--tier-accent-visible, var(--hazard-yellow)); letter-spacing:.06em; }
+  .mega-badge{ display:none; background:var(--tier-accent, var(--hazard-yellow)); color:var(--tier-accent-text, var(--hazard-dark)); font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:999px; }
+  .card.mega .mega-badge{ display:inline-block; }
+  .stars-row{ font-size:16px; letter-spacing:1px; color:var(--tier-accent-visible, var(--hazard-yellow)); line-height:1; }
+  .stars-row .n{ font-size:11px; color:#ffb199; margin-left:4px; font-family:'JetBrains Mono'; }
+
+  .damage-table{ margin-top:10px; display:flex; flex-direction:column; gap:5px; }
+  .damage-row{ display:flex; justify-content:space-between; gap:10px; font-size:11.5px; border-bottom:1px dashed #3a2020; padding-bottom:4px; }
+  .damage-row .k{ color:#ffb199; flex:0 0 auto; }
+  .damage-row .v{ font-family:'JetBrains Mono'; font-weight:700; text-align:right; }
+  .extra-chip-row{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .extra-chip{ font-size:10.5px; background:#2a0d0d; border:1px solid #4a2424; color:#ffcfc2; padding:3px 8px; border-radius:999px; }
+
+  .footer-mark{ text-align:center; font-size:9.5px; color:#c7c3e0; margin-top:12px; letter-spacing:.12em; }
+  .card.giant .footer-mark{ color:#5a5a68; }
+
+  /* mega shimmer */
+  .card.mega{ box-shadow:0 20px 55px var(--tier-accent, rgba(232,41,28,.5)); }
+  .card.mega::before{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);
+    background-size:250% 250%;
+    animation:shimmer 2.6s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes shimmer{ 0%{ background-position:180% 0; } 100%{ background-position:-80% 0; } }
+  .ribbon{
+    display:none;
+    position:absolute; top:14px; right:-42px;
+    background:var(--tier-accent, var(--hazard-yellow));
+    color:var(--tier-accent-text, var(--hazard-dark));
+    font-family:'M PLUS Rounded 1c';
+    font-weight:800;
+    font-size:10px;
+    padding:4px 46px;
+    transform:rotate(38deg);
+    letter-spacing:.05em;
+    box-shadow:0 3px 8px rgba(0,0,0,.3);
+  }
+  .card.mega .ribbon{ display:block; }
+
+  /* ---- GIGA / TERA: ribbon burns with an animated flame effect ---- */
+  @keyframes fireFlicker{
+    0%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+  }
+  @keyframes flameJitter{
+    0%,100%{ transform:rotate(38deg) scale(1); }
+    25%{ transform:rotate(36.5deg) scale(1.02); }
+    50%{ transform:rotate(39.5deg) scale(0.98); }
+    75%{ transform:rotate(37.5deg) scale(1.01); }
+  }
+  .card[data-tier="giga"] .mega-badge,
+  .card[data-tier="tera"] .mega-badge,
+  .card[data-tier="giga"] .ribbon,
+  .card[data-tier="tera"] .ribbon{
+    background:linear-gradient(90deg,#7a1a00,#ff3d00,#ffb300,#ff2200,#ffde59,#ff3d00,#7a1a00);
+    background-size:300% 100%;
+    animation:fireFlicker 1s linear infinite;
+    color:#fff6df;
+    text-shadow:0 0 3px #ff5500, 0 0 8px #ff2200, 0 0 14px #ff6a00;
+  }
+  .card[data-tier="giga"] .ribbon,
+  .card[data-tier="tera"] .ribbon{
+    animation:fireFlicker 1s linear infinite, flameJitter .5s ease-in-out infinite;
+    box-shadow:0 0 10px 2px rgba(255,90,0,.65), 0 3px 8px rgba(0,0,0,.3);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card[data-tier="giga"] .mega-badge, .card[data-tier="tera"] .mega-badge,
+    .card[data-tier="giga"] .ribbon, .card[data-tier="tera"] .ribbon{ animation:none; background-position:0% 50%; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card.mega::before{ animation:none; }
+  }
+
+  @media (max-width:960px){
+    .app{ flex-direction:column; align-items:center; }
+    .preview-panel{ position:static; }
+    .form-panel{ max-width:460px; width:100%; }
+  }
+
+  /* ---- crop modal ---- */
+  .modal{ position:fixed; inset:0; background:rgba(20,15,35,.55); display:flex; align-items:center; justify-content:center; z-index:50; }
+  .modal.hidden{ display:none; }
+  .modal-box{ background:#fff; border-radius:18px; padding:20px; width:min(360px, 92vw); text-align:center; }
+  .modal-box h3{ font-family:'M PLUS Rounded 1c'; margin:0 0 12px; font-size:16px; }
+  .crop-stage{ display:flex; justify-content:center; background:#111; border-radius:12px; overflow:hidden; margin-bottom:12px; touch-action:none; }
+  #cropCanvas{ cursor:grab; display:block; }
+  #cropCanvas:active{ cursor:grabbing; }
+  .modal-box label{ font-size:12px; color:var(--muted); display:block; margin-bottom:14px; }
+  .modal-box input[type=range]{ width:100%; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions button{ flex:1; padding:10px; border-radius:10px; border:none; font-weight:700; cursor:pointer; font-size:13.5px; }
+  #cropCancel{ background:#eee; color:#555; }
+  #cropConfirm{ background:var(--pink); color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div></div>
+  <div class="topbar-center">
+    <h1 data-i18n="appTitle">🌈 アバター紹介カードメーカー</h1>
+    <p data-i18n="appSubtitle">VRChatアバターのプロフィールカードを作って、PNGで書き出そう</p>
+  </div>
+  <div class="lang-select-wrap">
+    <select id="langSelect">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+      <option value="ko">한국어</option>
+      <option value="zh">中文</option>
+    </select>
+  </div>
+</div>
+
+<div class="app">
+  <!-- ================= FORM ================= -->
+  <div class="form-panel">
+    <div class="toggle-row">
+      <div class="seg-toggle" id="modeToggle">
+        <button type="button" class="active" data-mode="normal" data-i18n="modeNormal">🐣 通常サイズ</button>
+        <button type="button" data-mode="giant" data-i18n="modeGiant">🏙️ 巨大サイズ</button>
+      </div>
+      <div class="seg-toggle orient" id="orientToggle">
+        <button type="button" class="active" data-orient="portrait" data-i18n="orientPortrait">縦</button>
+        <button type="button" data-orient="landscape" data-i18n="orientLandscape">横</button>
+      </div>
+    </div>
+
+    <form id="cardForm">
+      <fieldset>
+        <legend data-i18n="legendPhoto">📸 メイン画像</legend>
+        <div class="field">
+          <div class="dropzone" id="dz-avatar" tabindex="0">
+            <span id="dz-avatar-text" data-i18n="dzMainText">クリック or ドラッグ&ドロップで画像を選択</span>
+          </div>
+          <div class="hint" data-i18n="hintPhoto">4:5(横向きの場合は5:4)でトリミングされます</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="legendExpr">😊 表情差分(任意・最大3枚)</legend>
+        <div class="expr-grid">
+          <div class="dropzone" data-idx="0"><span class="dz-text" data-i18n="exprSlot1">1枚目</span></div>
+          <div class="dropzone" data-idx="1"><span class="dz-text" data-i18n="exprSlot2">2枚目</span></div>
+          <div class="dropzone" data-idx="2"><span class="dz-text" data-i18n="exprSlot3">3枚目</span></div>
+        </div>
+        <div class="hint" data-i18n="hintExpr">選択後にズーム・移動で表情部分だけ切り取れます</div>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="legendBasic">📝 基本情報</legend>
+        <div class="field">
+          <label for="f-name" data-i18n="labelName">アバター名</label>
+          <input type="text" id="f-name">
+        </div>
+        <div class="field">
+          <label for="f-desc" data-i18n="labelDesc">説明欄</label>
+          <textarea id="f-desc"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-subtitle" data-i18n="labelSubtitle">肩書き・サブタイトル(任意)</label>
+          <input type="text" id="f-subtitle">
+        </div>
+        <div class="row3">
+          <div class="field">
+            <label for="f-height" data-i18n="labelHeight">身長(任意・自由入力)</label>
+            <input type="text" id="f-height">
+          </div>
+          <div class="field">
+            <label for="f-weight" data-i18n="labelWeight">体重(任意・自由入力)</label>
+            <input type="text" id="f-weight">
+          </div>
+        </div>
+        <button type="button" class="recalc-btn" id="estimateWeightBtn" style="border-color:var(--pink); color:var(--pink);"><span data-i18n="btnEstimateWeight">⚖️ 身長から体重を概算</span></button>
+        <div class="hint" style="margin:-8px 0 12px;" data-i18n="hintWeightEstimate">身長の単位から自動概算します(m→kg / km→t / 光年→Mt / cm→kg)。「???」ならそのまま「???」に</div>
+
+        <div class="field">
+          <label data-i18n="labelSizes">スリーサイズ(任意・cm)</label>
+          <div class="row3">
+            <div><input type="number" id="f-b" placeholder="B"></div>
+            <div><input type="number" id="f-h" placeholder="H"></div>
+            <div><input type="number" id="f-w" placeholder="W"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-quote" data-i18n="labelQuote">セリフ(任意)</label>
+          <input type="text" id="f-quote">
+        </div>
+        <div class="field">
+          <label for="f-origin" data-i18n="labelOrigin">出身(任意)</label>
+          <input type="text" id="f-origin">
+        </div>
+      </fieldset>
+
+      <fieldset class="giant-only giant-legend" style="display:none">
+        <legend data-i18n="legendGiant">⚠️ 巨大サイズ設定</legend>
+        <div class="field">
+          <label for="f-stars" data-i18n="labelStars">危険度(★の数)</label>
+          <input type="number" id="f-stars" min="0" value="5">
+        </div>
+        <button type="button" class="recalc-btn" id="recalcBtn"><span data-i18n="btnRecalc">🎲 被害想定を自動概算する</span></button>
+
+        <div class="field"><label for="f-deaths" data-i18n="labelDeaths">死亡者数(自動概算・編集可)</label><input type="text" id="f-deaths"></div>
+        <div class="field"><label for="f-injured" data-i18n="labelInjured">負傷者数(自動概算・編集可)</label><input type="text" id="f-injured"></div>
+        <div class="field"><label for="f-cities" data-i18n="labelCities">壊滅させた都市数(自動概算・編集可)</label><input type="text" id="f-cities"></div>
+        <div class="field"><label for="f-buildings" data-i18n="labelBuildings">倒壊した建物数(自動概算・編集可)</label><input type="text" id="f-buildings"></div>
+        <div class="field"><label for="f-area" data-i18n="labelArea">被害面積(自動概算・編集可)</label><input type="text" id="f-area"></div>
+        <div class="field"><label for="f-cost" data-i18n="labelCost">被害総額(自動概算・編集可)</label><input type="text" id="f-cost"></div>
+
+        <div class="field">
+          <label for="f-attack" data-i18n="labelAttack">攻撃パターン(任意)</label>
+          <input type="text" id="f-attack" placeholder="例: 踏み潰し / 建物投げ" data-i18n-ph="phAttack">
+        </div>
+        <div class="field">
+          <label for="f-durability" data-i18n="labelDurability">耐久性(任意)</label>
+          <input type="text" id="f-durability" placeholder="例: 核ミサイル効果なし" data-i18n-ph="phDurability">
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <!-- ================= PREVIEW ================= -->
+  <div class="preview-panel">
+    <div class="card-scale-wrap">
+      <div class="card normal" id="theCard">
+        <div class="ribbon" id="p-ribbon">MEGA</div>
+        <div class="hazard-bar"><span id="p-hazard-text">⚠ 危険生物警報 ⚠</span></div>
+
+        <div class="photo-wrap">
+          <div class="photo-frame" id="p-photo">
+            <span class="ph-empty" id="p-photo-empty" data-i18n="defaultPhotoEmpty">画像未設定</span>
+          </div>
+          <div class="sticker-row" id="p-stickers"></div>
+        </div>
+
+        <div class="name-banner">
+          <div class="name-text" id="p-name">アバター名</div>
+          <div class="subtitle" id="p-origin"></div>
+        </div>
+
+        <div class="quote-bubble" id="p-quote" style="display:none"></div>
+
+        <div class="stat-grid" id="p-statgrid">
+          <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
+          <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
+          <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
+        </div>
+
+        <div class="danger-block">
+          <div class="danger-head">
+            <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
+            <span class="mega-badge" id="p-mega-badge">MEGA</span>
+          </div>
+          <div class="stars-row" id="p-stars">-</div>
+          <div class="damage-table">
+            <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
+            <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
+            <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
+            <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
+            <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
+            <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
+          </div>
+          <div class="extra-chip-row" id="p-extra"></div>
+        </div>
+
+        <div class="desc-block">
+          <div class="desc-eyebrow" data-i18n="eyebrowProfile">PROFILE</div>
+          <div class="desc-text" id="p-desc">ここに紹介文が表示されます。</div>
+        </div>
+
+        <div class="footer-mark" data-i18n="footerMark">AVATAR INTRODUCTION CARD</div>
+      </div>
+    </div>
+
+    <button type="button" class="complete-btn" id="completeBtn"><span data-i18n="btnComplete">✅ 完成(PNGを保存)</span></button>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+</div>
+
+<!-- ============ crop modal ============ -->
+<div class="modal hidden" id="cropModal">
+  <div class="modal-box">
+    <h3 id="cropTitle">画像を調整</h3>
+    <div class="crop-stage"><canvas id="cropCanvas"></canvas></div>
+    <label><span data-i18n="cropZoomLabel">ズーム</span>
+      <input type="range" id="cropZoom" min="100" max="400" value="100">
+    </label>
+    <div class="modal-actions">
+      <button type="button" id="cropCancel" data-i18n="cropCancel">キャンセル</button>
+      <button type="button" id="cropConfirm" data-i18n="cropConfirm">この範囲で決定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= i18n ================= */
+  const TR = {
+    appTitle:{ja:'🌈 アバター紹介カードメーカー',en:'🌈 Avatar Profile Card Maker',ko:'🌈 아바타 소개 카드 메이커',zh:'🌈 Avatar 角色卡制作器'},
+    appSubtitle:{ja:'VRChatアバターのプロフィールカードを作って、PNGで書き出そう',en:'Create a profile card for your VRChat avatar and export it as PNG',ko:'VRChat 아바타 프로필 카드를 만들고 PNG로 내보내세요',zh:'制作你的 VRChat 角色资料卡,并导出为 PNG'},
+    modeNormal:{ja:'🐣 通常サイズ',en:'🐣 Normal Size',ko:'🐣 일반 사이즈',zh:'🐣 普通尺寸'},
+    modeGiant:{ja:'🏙️ 巨大サイズ',en:'🏙️ Giant Size',ko:'🏙️ 거대 사이즈',zh:'🏙️ 巨大尺寸'},
+    orientPortrait:{ja:'縦',en:'Portrait',ko:'세로',zh:'纵向'},
+    orientLandscape:{ja:'横',en:'Landscape',ko:'가로',zh:'横向'},
+    legendPhoto:{ja:'📸 メイン画像',en:'📸 Main Image',ko:'📸 메인 이미지',zh:'📸 主图片'},
+    dzMainText:{ja:'クリック or ドラッグ&ドロップで画像を選択',en:'Click or drag & drop to select an image',ko:'클릭하거나 드래그&드롭으로 이미지를 선택하세요',zh:'点击或拖放以选择图片'},
+    dzMainChangeText:{ja:'クリックで変更',en:'Click to change',ko:'클릭하여 변경',zh:'点击以更改'},
+    hintPhoto:{ja:'4:5(横向きの場合は5:4)でトリミングされます',en:'Cropped to 4:5 (5:4 in landscape mode)',ko:'4:5 비율로 잘립니다(가로 모드는 5:4)',zh:'将按 4:5 裁剪(横向模式为 5:4)'},
+    legendExpr:{ja:'😊 表情差分(任意・最大3枚)',en:'😊 Expression Variants (optional, up to 3)',ko:'😊 표정 차분(선택, 최대 3장)',zh:'😊 表情差分(可选,最多3张)'},
+    exprSlot1:{ja:'1枚目',en:'Slot 1',ko:'1번째',zh:'第1张'},
+    exprSlot2:{ja:'2枚目',en:'Slot 2',ko:'2번째',zh:'第2张'},
+    exprSlot3:{ja:'3枚目',en:'Slot 3',ko:'3번째',zh:'第3张'},
+    hintExpr:{ja:'選択後にズーム・移動で表情部分だけ切り取れます',en:'After selecting, zoom & drag to crop just the facial expression',ko:'선택 후 확대/이동으로 표정 부분만 잘라낼 수 있습니다',zh:'选择后可通过缩放和拖动只裁剪表情部分'},
+    legendBasic:{ja:'📝 基本情報',en:'📝 Basic Info',ko:'📝 기본 정보',zh:'📝 基本信息'},
+    labelName:{ja:'アバター名',en:'Avatar Name',ko:'아바타 이름',zh:'角色名称'},
+    labelDesc:{ja:'説明欄',en:'Description',ko:'설명',zh:'简介'},
+    labelSubtitle:{ja:'肩書き・サブタイトル(任意)',en:'Title / Subtitle (optional)',ko:'직함・부제(선택)',zh:'头衔・副标题(可选)'},
+    labelHeight:{ja:'身長(任意・自由入力)',en:'Height (optional, free text)',ko:'키(선택, 자유 입력)',zh:'身高(可选,自由输入)'},
+    labelWeight:{ja:'体重(任意・自由入力)',en:'Weight (optional, free text)',ko:'체중(선택, 자유 입력)',zh:'体重(可选,自由输入)'},
+    btnEstimateWeight:{ja:'⚖️ 身長から体重を概算',en:'⚖️ Estimate weight from height',ko:'⚖️ 키로 체중 추정하기',zh:'⚖️ 根据身高估算体重'},
+    hintWeightEstimate:{ja:'身長の単位から自動概算します(m→kg / km→t / 光年→Mt / cm→kg)。「???」ならそのまま「???」に',en:'Auto-estimated from the height unit (m→kg / km→t / light-years→Mt / cm→kg). "???" stays "???"',ko:'키 단위로 자동 추정합니다(m→kg / km→t / 광년→Mt / cm→kg). "???"는 그대로 "???"로 표시됩니다',zh:'根据身高单位自动估算(m→kg / km→t / 光年→Mt / cm→kg)。「???」将保持为「???」'},
+    labelSizes:{ja:'スリーサイズ(任意・cm)',en:'Body Measurements (optional, cm)',ko:'쓰리사이즈(선택, cm)',zh:'三围(可选,厘米)'},
+    labelQuote:{ja:'セリフ(任意)',en:'Quote (optional)',ko:'대사(선택)',zh:'台词(可选)'},
+    labelOrigin:{ja:'出身(任意)',en:'Origin (optional)',ko:'출신(선택)',zh:'出身(可选)'},
+    legendGiant:{ja:'⚠️ 巨大サイズ設定',en:'⚠️ Giant Size Settings',ko:'⚠️ 거대 사이즈 설정',zh:'⚠️ 巨大尺寸设置'},
+    labelStars:{ja:'危険度(★の数)',en:'Danger Level (number of ★)',ko:'위험도(★ 개수)',zh:'危险度(★数量)'},
+    btnRecalc:{ja:'🎲 被害想定を自動概算する',en:'🎲 Auto-estimate damage',ko:'🎲 피해 규모 자동 추정',zh:'🎲 自动估算灾害规模'},
+    labelDeaths:{ja:'死亡者数(自動概算・編集可)',en:'Deaths (auto-estimated, editable)',ko:'사망자 수(자동 추정, 편집 가능)',zh:'死亡人数(自动估算,可编辑)'},
+    labelInjured:{ja:'負傷者数(自動概算・編集可)',en:'Injured (auto-estimated, editable)',ko:'부상자 수(자동 추정, 편집 가능)',zh:'受伤人数(自动估算,可编辑)'},
+    labelCities:{ja:'壊滅させた都市数(自動概算・編集可)',en:'Cities Destroyed (auto-estimated, editable)',ko:'파괴된 도시 수(자동 추정, 편집 가능)',zh:'摧毁城市数(自动估算,可编辑)'},
+    labelBuildings:{ja:'倒壊した建物数(自動概算・編集可)',en:'Buildings Collapsed (auto-estimated, editable)',ko:'붕괴된 건물 수(자동 추정, 편집 가능)',zh:'倒塌建筑数(自动估算,可编辑)'},
+    labelArea:{ja:'被害面積(自動概算・編集可)',en:'Damage Area (auto-estimated, editable)',ko:'피해 면적(자동 추정, 편집 가능)',zh:'受灾面积(自动估算,可编辑)'},
+    labelCost:{ja:'被害総額(自動概算・編集可)',en:'Total Damage Cost (auto-estimated, editable)',ko:'총 피해액(자동 추정, 편집 가능)',zh:'损失总额(自动估算,可编辑)'},
+    labelAttack:{ja:'攻撃パターン(任意)',en:'Attack Pattern (optional)',ko:'공격 패턴(선택)',zh:'攻击方式(可选)'},
+    phAttack:{ja:'例: 踏み潰し / 建物投げ',en:'e.g. Stomping / Throwing buildings',ko:'예: 짓밟기 / 건물 던지기',zh:'例:踩踏 / 投掷建筑物'},
+    labelDurability:{ja:'耐久性(任意)',en:'Durability (optional)',ko:'내구성(선택)',zh:'耐久度(可选)'},
+    phDurability:{ja:'例: 核ミサイル効果なし',en:'e.g. Unfazed by nuclear missiles',ko:'예: 핵미사일에도 끄떡없음',zh:'例:核导弹对其无效'},
+    btnComplete:{ja:'✅ 完成(PNGを保存)',en:'✅ Finish (Save as PNG)',ko:'✅ 완성(PNG로 저장)',zh:'✅ 完成(保存为 PNG)'},
+    cropTitleMain:{ja:'メイン画像を調整(ズーム・ドラッグで位置調整)',en:'Adjust main image (zoom & drag to position)',ko:'메인 이미지 조정(확대/드래그로 위치 조정)',zh:'调整主图片(缩放・拖动以调整位置)'},
+    cropTitleExpr:{ja:'表情画像を調整(ズーム・ドラッグで位置調整)',en:'Adjust expression image (zoom & drag to position)',ko:'표정 이미지 조정(확대/드래그로 위치 조정)',zh:'调整表情图片(缩放・拖动以调整位置)'},
+    cropZoomLabel:{ja:'ズーム',en:'Zoom',ko:'확대/축소',zh:'缩放'},
+    cropCancel:{ja:'キャンセル',en:'Cancel',ko:'취소',zh:'取消'},
+    cropConfirm:{ja:'この範囲で決定',en:'Confirm Crop',ko:'이 범위로 확정',zh:'确认裁剪范围'},
+    hazardPeace:{ja:'🕊 平和的 🕊',en:'🕊 PEACEFUL 🕊',ko:'🕊 평화적 🕊',zh:'🕊 和平 🕊'},
+    hazardCaution:{ja:'⚠ 危険生物注意報 ⚠',en:'⚠ CREATURE CAUTION ⚠',ko:'⚠ 위험 생물 주의보 ⚠',zh:'⚠ 危险生物注意 ⚠'},
+    hazardAlert:{ja:'⚠ 危険生物警報 ⚠',en:'⚠ DANGEROUS CREATURE ALERT ⚠',ko:'⚠ 위험 생물 경보 ⚠',zh:'⚠ 危险生物警报 ⚠'},
+    hazardMega:{ja:'⚠ 危険生物特別警報 ⚠',en:'⚠ SPECIAL CREATURE ALERT ⚠',ko:'⚠ 위험 생물 특별경보 ⚠',zh:'⚠ 危险生物特别警报 ⚠'},
+    hazardGiga:{ja:'⚠ 国家非常事態宣言 ⚠',en:'⚠ NATIONAL STATE OF EMERGENCY ⚠',ko:'⚠ 국가 비상사태 선언 ⚠',zh:'⚠ 国家紧急状态宣言 ⚠'},
+    hazardTera:{ja:'⚠ 人類存続危機宣言 ⚠',en:'⚠ HUMANITY EXTINCTION CRISIS ⚠',ko:'⚠ 인류 존속 위기 선언 ⚠',zh:'⚠ 人类存续危机宣言 ⚠'},
+    hazardFinal:{ja:'⚠ 終焉宣言 ⚠',en:'⚠ DECLARATION OF THE END ⚠',ko:'⚠ 종언 선언 ⚠',zh:'⚠ 终焉宣言 ⚠'},
+    eyebrowProfile:{ja:'PROFILE',en:'PROFILE',ko:'PROFILE',zh:'PROFILE'},
+    dangerLevelLabel:{ja:'DANGER LEVEL',en:'DANGER LEVEL',ko:'DANGER LEVEL',zh:'DANGER LEVEL'},
+    footerMark:{ja:'AVATAR INTRODUCTION CARD',en:'AVATAR INTRODUCTION CARD',ko:'AVATAR INTRODUCTION CARD',zh:'AVATAR INTRODUCTION CARD'},
+    kDeaths:{ja:'死亡者数',en:'Deaths',ko:'사망자 수',zh:'死亡人数'},
+    kInjured:{ja:'負傷者数',en:'Injured',ko:'부상자 수',zh:'受伤人数'},
+    kCities:{ja:'壊滅都市数',en:'Cities Destroyed',ko:'파괴 도시 수',zh:'摧毁城市数'},
+    kBuildings:{ja:'倒壊建物数',en:'Buildings Collapsed',ko:'붕괴 건물 수',zh:'倒塌建筑数'},
+    kArea:{ja:'被害面積',en:'Damage Area',ko:'피해 면적',zh:'受灾面积'},
+    kCost:{ja:'被害総額',en:'Total Cost',ko:'총 피해액',zh:'损失总额'},
+    kHeight:{ja:'身長',en:'Height',ko:'키',zh:'身高'},
+    kWeight:{ja:'体重',en:'Weight',ko:'체중',zh:'体重'},
+    kSizes:{ja:'スリーサイズ',en:'Measurements',ko:'쓰리사이즈',zh:'三围'},
+    defaultName:{ja:'アバター名',en:'Avatar Name',ko:'아바타 이름',zh:'角色名称'},
+    defaultDesc:{ja:'ここに紹介文が表示されます。',en:'Your description will appear here.',ko:'여기에 소개문이 표시됩니다.',zh:'这里将显示介绍文字。'},
+    defaultPhotoEmpty:{ja:'画像未設定',en:'No image set',ko:'이미지 미설정',zh:'未设置图片'},
+    extraAttackPrefix:{ja:'攻撃: ',en:'Attack: ',ko:'공격: ',zh:'攻击:'},
+    extraDurabilityPrefix:{ja:'耐久: ',en:'Durability: ',ko:'내구성: ',zh:'耐久:'},
+    statusExporting:{ja:'書き出し中...',en:'Exporting...',ko:'내보내는 중...',zh:'正在导出...'},
+    statusSavedPrefix:{ja:'保存しました: ',en:'Saved: ',ko:'저장됨: ',zh:'已保存:'},
+    statusFailPrefix:{ja:'書き出しに失敗しました: ',en:'Export failed: ',ko:'내보내기 실패: ',zh:'导出失败:'},
+    statusLibFail:{ja:'画像出力ライブラリの読み込みに失敗しました。通信環境を確認してください。',en:'Failed to load the image export library. Please check your network connection.',ko:'이미지 내보내기 라이브러리를 불러오지 못했습니다. 네트워크 환경을 확인해 주세요.',zh:'图片导出库加载失败,请检查网络连接。'},
+    statusHeightUnreadable:{ja:'身長の単位(m/km/光年/cm)が読み取れなかったため体重は概算されませんでした。',en:'Could not read the height unit (m/km/light-years/cm), so weight was not estimated.',ko:'키 단위(m/km/광년/cm)를 읽을 수 없어 체중이 추정되지 않았습니다.',zh:'无法识别身高单位(m/km/光年/cm),因此未能估算体重。'},
+    zeroDeaths:{ja:'不明(平和的)',en:'Unknown (peaceful)',ko:'불명(평화적)',zh:'未知(和平)'},
+    zeroCities:{ja:'0都市',en:'0 cities',ko:'0개 도시',zh:'0座城市'},
+    zeroBuildings:{ja:'0棟',en:'0 buildings',ko:'0동',zh:'0栋'},
+    zeroArea:{ja:'測定なし',en:'Not measured',ko:'측정 없음',zh:'无测量数据'},
+    zeroCost:{ja:'0円',en:'0 USD',ko:'0원',zh:'0元'},
+    irreparable:{ja:'修復不能',en:'Beyond Repair',ko:'복구 불가능',zh:'无法修复'},
+  };
+  let currentLang = 'ja';
+  function t(key){
+    const e = TR[key];
+    if(!e) return key;
+    return e[currentLang] || e.ja;
+  }
+  function applyI18n(){
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      el.placeholder = t(el.dataset.i18nPh);
+    });
+  }
+  document.getElementById('langSelect').addEventListener('change', (e)=>{
+    currentLang = e.target.value;
+    applyI18n();
+    renderAll();
+  });
+
+  /* ================= state ================= */
+  const state = {
+    mode: 'normal',
+    orientation: 'portrait',
+    avatar: null,
+    expressions: [null,null,null],
+  };
+
+  const $ = (id)=>document.getElementById(id);
+
+  /* ---------------- number / localized unit formatting ---------------- */
+  const UNIT_WORDS = {
+    ja:{people:'人', buildings:'棟', cities:'都市', about:'約', sep:'〜'},
+    en:{people:' people', buildings:' buildings', cities:' cities', about:'approx. ', sep:'–'},
+    ko:{people:'명', buildings:'동', cities:'개 도시', about:'약 ', sep:'~'},
+    zh:{people:'人', buildings:'栋', cities:'座城市', about:'约', sep:'~'}
+  };
+  // 被害総額の通貨: 各言語圏で一般的な通貨に換算して表示する(内部計算は常に円ベース)
+  const CURRENCY = {
+    ja:{unit:'円', rateFromJPY:1},
+    en:{unit:' USD', rateFromJPY:1/150},
+    ko:{unit:'원', rateFromJPY:9},
+    zh:{unit:'元', rateFromJPY:1/20.5}
+  };
+  // 面積はその言語圏で一般的な単位に変換して表示する(内部計算は常にkm^2)
+  const AREA_UNIT = {
+    ja:{unit:'km²', factor:1},
+    zh:{unit:'平方公里', factor:1},
+    ko:{unit:'km²', factor:1},
+    en:{unit:'sq mi', factor:0.386102}
+  };
+  const SCALE_WORDS = {
+    ja:[[1e20,'垓'],[1e16,'京'],[1e12,'兆'],[1e8,'億'],[1e4,'万']],
+    zh:[[1e20,'垓'],[1e16,'京'],[1e12,'兆'],[1e8,'亿'],[1e4,'万'],[1e3,'千']],
+    ko:[[1e20,'해'],[1e16,'경'],[1e12,'조'],[1e8,'억'],[1e4,'만'],[1e3,'천']],
+    en:[[1e18,'E'],[1e15,'P'],[1e12,'T'],[1e9,'G'],[1e6,'M'],[1e3,'k']]
+  };
+  const JA_IRREPARABLE_THRESHOLD = 1e24; // 垓(10^20)より上の単位が必要になる金額
+  function comma(n){ return Math.round(n).toLocaleString('en-US'); }
+  function formatBigNumber(n){
+    if(!isFinite(n)) return '∞';
+    const scale = SCALE_WORDS[currentLang] || SCALE_WORDS.ja;
+    for(const [v,s] of scale){
+      if(n >= v) return (n/v).toFixed(2).replace(/\.00$/,'') + s;
+    }
+    if(n >= 1) return comma(n);
+    return n.toFixed(3);
+  }
+  function rangeStr(min,max,unitWord){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    return `${uw.about}${comma(min)}${unitWord}${uw.sep}${comma(max)}${unitWord}`;
+  }
+  // 日本語のときは人数・棟数・都市数も万/億/兆/京/垓表記にする。他言語はカンマ区切りのまま。
+  function countStr(min,max,unitWord){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    if(currentLang === 'ja'){
+      return `${uw.about}${formatBigNumber(min)}${unitWord}${uw.sep}${formatBigNumber(max)}${unitWord}`;
+    }
+    return rangeStr(min,max,unitWord);
+  }
+  // 被害総額: 言語ごとの通貨に換算。日本語で垓を超える場合は「修復不能」。
+  function costStr(minJPY,maxJPY){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    const conv = CURRENCY[currentLang] || CURRENCY.ja;
+    if(currentLang === 'ja' && (minJPY >= JA_IRREPARABLE_THRESHOLD || maxJPY >= JA_IRREPARABLE_THRESHOLD)){
+      return t('irreparable');
+    }
+    const minLocal = minJPY * conv.rateFromJPY;
+    const maxLocal = maxJPY * conv.rateFromJPY;
+    return `${uw.about}${formatBigNumber(minLocal)}${conv.unit}${uw.sep}${formatBigNumber(maxLocal)}${conv.unit}`;
+  }
+
+  /* ---------------- damage calculation ---------------- */
+  function computeDamage(n){
+    n = Math.max(0, Number(n)||0);
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    if(n<=0){
+      return { deaths:t('zeroDeaths'), injured:t('zeroDeaths'), cities:t('zeroCities'), buildings:t('zeroBuildings'), area:t('zeroArea'), cost:t('zeroCost') };
+    }
+    const deathsBase = 4 * Math.pow(1.62, n);
+    const injuredMult = 2.3 + Math.random()*1.7;
+    const injuredBase = deathsBase * injuredMult;
+    const citiesBase = n < 6 ? 0 : 0.35 * Math.pow(1.28, n-5);
+    const buildingsMult = 5 + Math.random()*4;
+    const buildingsBase = deathsBase * buildingsMult;
+    const areaBase = 0.07 * Math.pow(1.45, n);
+    const costBase = buildingsBase*2.5e8 + areaBase*6e9;
+
+    function spread(base, lowMul, highMul){
+      const lo = base * (lowMul + Math.random()*0.08);
+      const hi = base * (highMul + Math.random()*0.15);
+      return [lo, Math.max(hi, lo*1.05)];
+    }
+    const [dMin,dMax] = spread(deathsBase, 0.72, 1.2);
+    const [iMin,iMax] = spread(injuredBase, 0.72, 1.2);
+    const [cMin,cMax] = spread(Math.max(citiesBase,0), 0.7, 1.3);
+    const [bMin,bMax] = spread(buildingsBase, 0.7, 1.3);
+    const [aMin,aMax] = spread(areaBase, 0.7, 1.3);
+    const [costMin,costMax] = spread(costBase, 0.7, 1.3);
+
+    const areaCfg = AREA_UNIT[currentLang] || AREA_UNIT.ja;
+    const aMinDisp = aMin * areaCfg.factor;
+    const aMaxDisp = aMax * areaCfg.factor;
+
+    return {
+      deaths: countStr(dMin,dMax,uw.people),
+      injured: countStr(iMin,iMax,uw.people),
+      cities: countStr(cMin,cMax,uw.cities),
+      buildings: countStr(bMin,bMax,uw.buildings),
+      area: `${uw.about}${aMinDisp.toFixed(1)}${uw.sep}${aMaxDisp.toFixed(1)}${areaCfg.unit}`,
+      cost: costStr(costMin, costMax)
+    };
+  }
+  function runAutoCalc(){
+    const stars = Number($('f-stars').value)||0;
+    const r = computeDamage(stars);
+    $('f-deaths').value = r.deaths;
+    $('f-injured').value = r.injured;
+    $('f-cities').value = r.cities;
+    $('f-buildings').value = r.buildings;
+    $('f-area').value = r.area;
+    $('f-cost').value = r.cost;
+    renderAll();
+  }
+  $('recalcBtn').addEventListener('click', runAutoCalc);
+  $('f-stars').addEventListener('change', runAutoCalc);
+
+  /* ---------------- weight estimation from height ---------------- */
+  function parseHeightValue(text){
+    text = (text||'').trim();
+    if(!text) return null;
+    const normalized = text.replace(/\uFF1F/g, '?');
+    const m = normalized.match(/([\d]+(?:\.[\d]+)?|\?+)\s*(光年|km|cm|m)/);
+    if(m){
+      if(/^\?+$/.test(m[1])) return {unknown:true, unit:m[2]};
+      return {value:parseFloat(m[1]), unit:m[2]};
+    }
+    if(/^\?+$/.test(normalized)) return {unknown:true, unit:null};
+    return null;
+  }
+  function unitToWeightUnit(unit){
+    if(unit==='km') return 't';
+    if(unit==='光年') return 'Mt';
+    return 'kg';
+  }
+  function estimateWeightFromHeight(heightText){
+    const parsed = parseHeightValue(heightText);
+    if(!parsed) return null;
+    if(parsed.unknown){
+      if(!parsed.unit) return '???';
+      return `???${unitToWeightUnit(parsed.unit)}`;
+    }
+    const K = 13;
+    let heightM, outUnit;
+    switch(parsed.unit){
+      case 'cm': heightM = parsed.value/100; outUnit='kg'; break;
+      case 'm':  heightM = parsed.value;     outUnit='kg'; break;
+      case 'km': heightM = parsed.value*1000; outUnit='t'; break;
+      case '光年': heightM = parsed.value*9.4607e15; outUnit='Mt'; break;
+      default: heightM = parsed.value; outUnit='kg';
+    }
+    const weightKg = K * Math.pow(heightM,3);
+    let outVal;
+    if(outUnit==='kg') outVal = weightKg;
+    else if(outUnit==='t') outVal = weightKg/1000;
+    else outVal = weightKg/1e9;
+    return `${UNIT_WORDS[currentLang].about}${formatBigNumber(outVal)}${outUnit}`;
+  }
+  function autoEstimateWeight(force){
+    const est = estimateWeightFromHeight($('f-height').value);
+    if(est===null){
+      if(force){ $('statusMsg').textContent = t('statusHeightUnreadable'); }
+      return;
+    }
+    $('f-weight').value = est;
+    renderAll();
+  }
+  $('f-height').addEventListener('change', ()=>autoEstimateWeight(false));
+  $('estimateWeightBtn').addEventListener('click', ()=>autoEstimateWeight(true));
+
+  /* ---------------- tier palette ---------------- */
+  function giantTier(stars){
+    if(stars<=0)  return {key:'peace',   badge:null,   accent:'#2ecc71', text:'#06301b', dark:'#0d2f1c', fire:false, hazardKey:'hazardPeace',   showBadge:false};
+    if(stars<=9)  return {key:'caution', badge:null,   accent:'#ffc93c', text:'#1c1c26', dark:'#332a08', fire:false, hazardKey:'hazardCaution', showBadge:false};
+    if(stars<=19) return {key:'alert',   badge:null,   accent:'#e8291c', text:'#ffffff', dark:'#2a0d0d', fire:false, hazardKey:'hazardAlert',   showBadge:false};
+    if(stars<=29) return {key:'mega',    badge:'MEGA', accent:'#9b4de0', text:'#ffffff', dark:'#231030', fire:false, hazardKey:'hazardMega',    showBadge:true};
+    if(stars<=39) return {key:'giga',    badge:'GIGA', accent:'#e8291c', text:'#ffffff', dark:'#2a0d0d', fire:true,  hazardKey:'hazardGiga',    showBadge:true};
+    if(stars<=49) return {key:'tera',    badge:'TERA', accent:'#9b4de0', text:'#ffffff', dark:'#1c1024', fire:true,  hazardKey:'hazardTera',    showBadge:true};
+    return             {key:'final',   badge:'TERA', accent:'#141414', text:'#ffffff', dark:'#050505', fire:false, hazardKey:'hazardFinal',   showBadge:true};
+  }
+
+  /* ---------------- mode / orientation toggles ---------------- */
+  document.querySelectorAll('#modeToggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      document.querySelectorAll('.giant-only').forEach(el=>{
+        el.style.display = (state.mode==='giant') ? 'block' : 'none';
+      });
+      $('theCard').classList.toggle('giant', state.mode==='giant');
+      $('completeBtn').classList.toggle('giant', state.mode==='giant');
+      if(state.mode==='giant' && !$('f-deaths').value){ runAutoCalc(); }
+      if(!$('f-weight').value){ autoEstimateWeight(false); }
+      renderAll();
+    });
+  });
+  document.querySelectorAll('#orientToggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#orientToggle button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.orientation = btn.dataset.orient;
+      $('theCard').classList.toggle('landscape', state.orientation==='landscape');
+    });
+  });
+
+  /* ---------------- crop modal ---------------- */
+  const cropModal = $('cropModal');
+  const cropCanvas = $('cropCanvas');
+  const cropCtx = cropCanvas.getContext('2d');
+  const cropZoom = $('cropZoom');
+  let cropImg = null, cropBaseScale=1, cropScale=1, offX=0, offY=0;
+  let frameW=320, frameH=400;
+  let dragging=false, startX=0, startY=0, startOffX=0, startOffY=0;
+  let onCropDone = null;
+
+  function clampOffsets(){
+    const dw = cropImg.width*cropScale, dh = cropImg.height*cropScale;
+    const minX = Math.min(0, frameW - dw), maxX = 0;
+    const minY = Math.min(0, frameH - dh), maxY = 0;
+    offX = Math.min(maxX, Math.max(minX, offX));
+    offY = Math.min(maxY, Math.max(minY, offY));
+  }
+  function drawCrop(){
+    cropCtx.clearRect(0,0,frameW,frameH);
+    cropCtx.drawImage(cropImg, offX, offY, cropImg.width*cropScale, cropImg.height*cropScale);
+  }
+  function openCropEditor(file, aspect, doneCb){
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        cropImg = img;
+        if(aspect==='square'){ frameW=300; frameH=300; $('cropTitle').textContent=t('cropTitleExpr'); }
+        else { frameW=300; frameH=375; $('cropTitle').textContent=t('cropTitleMain'); }
+        cropCanvas.width=frameW; cropCanvas.height=frameH;
+        cropBaseScale = Math.max(frameW/img.width, frameH/img.height);
+        cropScale = cropBaseScale;
+        offX = (frameW - img.width*cropScale)/2;
+        offY = (frameH - img.height*cropScale)/2;
+        cropZoom.value = 100;
+        onCropDone = doneCb;
+        cropModal.classList.remove('hidden');
+        drawCrop();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  cropZoom.addEventListener('input', ()=>{
+    if(!cropImg) return;
+    const cx = frameW/2, cy = frameH/2;
+    const imgCx = (cx - offX)/cropScale, imgCy = (cy - offY)/cropScale;
+    cropScale = cropBaseScale * (cropZoom.value/100);
+    offX = cx - imgCx*cropScale;
+    offY = cy - imgCy*cropScale;
+    clampOffsets();
+    drawCrop();
+  });
+  function pointerPos(e){
+    if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
+    return {x:e.clientX, y:e.clientY};
+  }
+  cropCanvas.addEventListener('pointerdown', (e)=>{
+    dragging=true;
+    const p = pointerPos(e);
+    startX=p.x; startY=p.y; startOffX=offX; startOffY=offY;
+    cropCanvas.setPointerCapture(e.pointerId);
+  });
+  cropCanvas.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const p = pointerPos(e);
+    offX = startOffX + (p.x-startX);
+    offY = startOffY + (p.y-startY);
+    clampOffsets();
+    drawCrop();
+  });
+  cropCanvas.addEventListener('pointerup', ()=>{ dragging=false; });
+  cropCanvas.addEventListener('pointerleave', ()=>{ dragging=false; });
+
+  $('cropCancel').addEventListener('click', ()=>{
+    cropModal.classList.add('hidden');
+    cropImg=null; onCropDone=null;
+  });
+  $('cropConfirm').addEventListener('click', ()=>{
+    const outScale = 3;
+    const out = document.createElement('canvas');
+    out.width = frameW*outScale; out.height = frameH*outScale;
+    const octx = out.getContext('2d');
+    octx.drawImage(cropImg, offX*outScale, offY*outScale, cropImg.width*cropScale*outScale, cropImg.height*cropScale*outScale);
+    const dataUrl = out.toDataURL('image/png');
+    if(onCropDone) onCropDone(dataUrl);
+    cropModal.classList.add('hidden');
+    cropImg=null; onCropDone=null;
+  });
+
+  /* ---------------- avatar dropzone ---------------- */
+  function setupAvatarDropzone(){
+    const zoneEl = $('dz-avatar');
+    function acceptFile(file){
+      if(!file || !file.type.startsWith('image/')) return;
+      openCropEditor(file, 'portrait', (dataUrl)=>{
+        state.avatar = dataUrl;
+        zoneEl.innerHTML = `<img class="dz-thumb" src="${dataUrl}"><span>${t('dzMainChangeText')}</span>`;
+        renderAll();
+      });
+    }
+    zoneEl.addEventListener('click', ()=>{
+      const input = document.createElement('input');
+      input.type='file'; input.accept='image/*'; input.style.display='none';
+      input.onchange=(e)=>acceptFile(e.target.files[0]);
+      input.click();
+    });
+    ['dragenter','dragover'].forEach(ev=>zoneEl.addEventListener(ev,(e)=>{e.preventDefault();zoneEl.classList.add('dragover');}));
+    ['dragleave','drop'].forEach(ev=>zoneEl.addEventListener(ev,(e)=>{e.preventDefault();zoneEl.classList.remove('dragover');}));
+    zoneEl.addEventListener('drop',(e)=>acceptFile(e.dataTransfer.files[0]));
+  }
+  setupAvatarDropzone();
+
+  /* ---------------- expression dropzones ---------------- */
+  document.querySelectorAll('.expr-grid .dropzone').forEach((zone)=>{
+    const idx = Number(zone.dataset.idx);
+    function showEmpty(){
+      zone.innerHTML = `<span class="dz-text" data-i18n="exprSlot${idx+1}">${t('exprSlot'+(idx+1))}</span>`;
+    }
+    function showThumb(dataUrl){
+      zone.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'dz-thumb-wrap';
+      const img = document.createElement('img');
+      img.className='dz-thumb'; img.src=dataUrl;
+      const removeBtn = document.createElement('button');
+      removeBtn.type='button'; removeBtn.className='dz-remove'; removeBtn.textContent='×';
+      removeBtn.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        state.expressions[idx]=null;
+        showEmpty();
+        renderAll();
+      });
+      wrap.appendChild(img); wrap.appendChild(removeBtn);
+      zone.appendChild(wrap);
+    }
+    function acceptFile(file){
+      if(!file || !file.type.startsWith('image/')) return;
+      openCropEditor(file, 'square', (dataUrl)=>{
+        state.expressions[idx]=dataUrl;
+        showThumb(dataUrl);
+        renderAll();
+      });
+    }
+    zone.addEventListener('click',(e)=>{
+      if(e.target.closest('.dz-remove')) return;
+      const input = document.createElement('input');
+      input.type='file'; input.accept='image/*'; input.style.display='none';
+      input.onchange=(ev)=>acceptFile(ev.target.files[0]);
+      input.click();
+    });
+    ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,(e)=>{e.preventDefault();zone.classList.add('dragover');}));
+    ['dragleave','drop'].forEach(ev=>zone.addEventListener(ev,(e)=>{e.preventDefault();zone.classList.remove('dragover');}));
+    zone.addEventListener('drop',(e)=>acceptFile(e.dataTransfer.files[0]));
+  });
+
+  /* ---------------- render ---------------- */
+  function renderAll(){
+    const photoEl = $('p-photo');
+    if(state.avatar){ photoEl.innerHTML = `<img src="${state.avatar}" alt="avatar">`; }
+    else { photoEl.innerHTML = `<span class="ph-empty" id="p-photo-empty">${t('defaultPhotoEmpty')}</span>`; }
+
+    const stickerRow = $('p-stickers');
+    stickerRow.innerHTML='';
+    state.expressions.forEach(src=>{
+      if(!src) return;
+      const d = document.createElement('div'); d.className='sticker';
+      d.innerHTML = `<img src="${src}">`;
+      stickerRow.appendChild(d);
+    });
+
+    $('p-name').textContent = $('f-name').value.trim() || t('defaultName');
+    const origin = $('f-origin').value.trim();
+    const subtitle = $('f-subtitle').value.trim();
+    let subtitleText = '';
+    if(subtitle && origin) subtitleText = `${subtitle} / ${origin}`;
+    else if(subtitle) subtitleText = subtitle;
+    else if(origin) subtitleText = origin;
+    $('p-origin').textContent = subtitleText;
+
+    const quote = $('f-quote').value.trim();
+    const quoteEl = $('p-quote');
+    if(quote){ quoteEl.style.display='block'; quoteEl.textContent = `「${quote}」`; }
+    else { quoteEl.style.display='none'; }
+
+    const h = $('f-height').value.trim();
+    const w = $('f-weight').value.trim();
+    $('p-height').textContent = h || '-';
+    $('p-weight').textContent = w || '-';
+
+    const b=$('f-b').value, hh=$('f-h').value, ww=$('f-w').value;
+    const sizesWrap = $('p-sizes-wrap');
+    if(b||hh||ww){ sizesWrap.style.display='block'; $('p-sizes').textContent = `B${b||'-'} / H${hh||'-'} / W${ww||'-'}`; }
+    else { sizesWrap.style.display='none'; }
+
+    $('p-desc').textContent = $('f-desc').value.trim() || t('defaultDesc');
+
+    const card = $('theCard');
+    if(state.mode==='giant'){
+      const stars = Math.max(0, Number($('f-stars').value)||0);
+      if(stars > 10){
+        $('p-stars').innerHTML = `★<span class="n">×${stars}</span>`;
+      } else {
+        $('p-stars').innerHTML = '★'.repeat(stars) + '☆'.repeat(Math.max(0,10-stars));
+      }
+
+      const tier = giantTier(stars);
+      card.style.setProperty('--tier-accent', tier.accent);
+      card.style.setProperty('--tier-accent-text', tier.text);
+      card.style.setProperty('--tier-dark-bg', tier.dark);
+      card.style.setProperty('--tier-accent-visible', tier.key==='final' ? '#ffffff' : tier.accent);
+      card.dataset.tier = tier.key;
+      card.classList.toggle('mega', tier.showBadge);
+
+      $('p-mega-badge').textContent = tier.badge || '';
+      $('p-ribbon').textContent = tier.badge || '';
+      $('p-hazard-text').textContent = t(tier.hazardKey);
+
+      $('p-deaths').textContent = $('f-deaths').value || '-';
+      $('p-injured').textContent = $('f-injured').value || '-';
+      $('p-cities').textContent = $('f-cities').value || '-';
+      $('p-buildings').textContent = $('f-buildings').value || '-';
+      $('p-area').textContent = $('f-area').value || '-';
+      $('p-cost').textContent = $('f-cost').value || '-';
+
+      const extraRow = $('p-extra');
+      extraRow.innerHTML='';
+      const atk = $('f-attack').value.trim();
+      const dur = $('f-durability').value.trim();
+      if(atk){ const c=document.createElement('div'); c.className='extra-chip'; c.textContent=`${t('extraAttackPrefix')}${atk}`; extraRow.appendChild(c); }
+      if(dur){ const c=document.createElement('div'); c.className='extra-chip'; c.textContent=`${t('extraDurabilityPrefix')}${dur}`; extraRow.appendChild(c); }
+    } else {
+      card.classList.remove('mega');
+      card.style.removeProperty('--tier-accent');
+      card.style.removeProperty('--tier-accent-text');
+      card.style.removeProperty('--tier-dark-bg');
+      card.style.removeProperty('--tier-accent-visible');
+      delete card.dataset.tier;
+    }
+  }
+
+  document.getElementById('cardForm').addEventListener('input', renderAll);
+  document.getElementById('cardForm').addEventListener('change', renderAll);
+
+  /* ---------------- export PNG ---------------- */
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function timestampFilename(){
+    const d = new Date();
+    return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}.png`;
+  }
+  $('completeBtn').addEventListener('click', async ()=>{
+    const statusEl = $('statusMsg');
+    if(typeof html2canvas === 'undefined'){
+      statusEl.textContent = t('statusLibFail');
+      return;
+    }
+    statusEl.textContent = t('statusExporting');
+    try{
+      const card = $('theCard');
+      const canvas = await html2canvas(card, {scale:2.5, backgroundColor:null, useCORS:true});
+      const filename = timestampFilename();
+      canvas.toBlob((blob)=>{
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        statusEl.textContent = `${t('statusSavedPrefix')}${filename}`;
+      }, 'image/png');
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = `${t('statusFailPrefix')}${err.message}`;
+    }
+  });
+
+  /* ---------------- init ---------------- */
+  applyI18n();
+  runAutoCalc();
+  renderAll();
+})();
+</script>
+</body>
+</html>
