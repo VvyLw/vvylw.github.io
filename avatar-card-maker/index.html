@@ -20,6 +20,25 @@
     --hazard-red:#e8291c;
     --hazard-yellow:#ffd400;
     --hazard-dark:#14141c;
+    /* アプリ全体の「クローム」(カード自体は含まない)用のテーマ変数 */
+    --chrome-panel-bg:#ffffff;
+    --chrome-input-bg:#fbfbfe;
+    --chrome-input-border:#ecebf5;
+    --chrome-label:#8a8aa3;
+    --chrome-text:#1b1b2f;
+    --chrome-dropzone-bg:#fbfbfe;
+    --chrome-dropzone-border:#d9d6ec;
+    --chrome-btn-bg:#ffffff;
+  }
+  :root[data-theme="dark"]{
+    --chrome-panel-bg:#1c1c26;
+    --chrome-input-bg:#26263a;
+    --chrome-input-border:#3a3a4a;
+    --chrome-label:#a9a6c0;
+    --chrome-text:#f0f0f5;
+    --chrome-dropzone-bg:#26263a;
+    --chrome-dropzone-border:#3a3a4a;
+    --chrome-btn-bg:#1c1c26;
   }
   *{box-sizing:border-box;}
   body{
@@ -31,7 +50,16 @@
       var(--lavender);
     color:var(--ink);
     min-height:100vh;
+    transition:background .25s, color .25s;
   }
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(circle at 12% 8%, #2a1030 0%, transparent 45%),
+      radial-gradient(circle at 90% 12%, #08302a 0%, transparent 40%),
+      #0f0f16;
+    color:#e8e6f5;
+  }
+  :root[data-theme="dark"] .topbar p{ color:#a9a6c0; }
   .topbar{
     display:grid;
     grid-template-columns:1fr auto 1fr;
@@ -49,14 +77,45 @@
   }
   .topbar p{ margin:0; color:var(--muted); font-size:12.5px; }
   .lang-select-wrap{ justify-self:end; }
+  .theme-switch-wrap{ justify-self:start; }
+  .theme-switch{
+    border:none;
+    background:transparent;
+    padding:0;
+    cursor:pointer;
+    display:inline-flex;
+  }
+  .theme-switch-track{
+    display:inline-flex;
+    align-items:center;
+    width:52px; height:30px;
+    border-radius:999px;
+    background:var(--chrome-panel-bg);
+    border:1.5px solid var(--chrome-input-border);
+    position:relative;
+    transition:background .25s, border-color .25s;
+  }
+  .theme-switch-thumb{
+    position:absolute;
+    top:3px; left:3px;
+    width:24px; height:24px;
+    border-radius:50%;
+    background:#ffd54f;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    transition:left .25s, background .25s;
+  }
+  :root[data-theme="dark"] .theme-switch-track{ background:#1c1c26; border-color:#3a3a4a; }
+  :root[data-theme="dark"] .theme-switch-thumb{ left:25px; background:#2b2b45; }
   #langSelect{
-    border:1.5px solid #e3e0f5;
+    border:1.5px solid var(--chrome-input-border);
     border-radius:10px;
     padding:7px 10px;
     font-size:13px;
     font-family:inherit;
-    background:#fff;
-    color:var(--ink);
+    background:var(--chrome-panel-bg);
+    color:var(--chrome-text);
     cursor:pointer;
   }
 
@@ -72,10 +131,11 @@
   .form-panel{
     flex:1 1 420px;
     max-width:460px;
-    background:#fff;
+    background:var(--chrome-panel-bg);
     border-radius:20px;
     padding:22px;
     box-shadow:0 10px 30px rgba(30,20,60,.08);
+    transition:background .25s;
   }
   .preview-panel{
     flex:0 0 auto;
@@ -189,7 +249,7 @@
     display:block;
     font-size:12px;
     font-weight:700;
-    color:var(--muted);
+    color:var(--chrome-label);
     margin-bottom:4px;
   }
   .field input[type="text"],
@@ -198,17 +258,17 @@
   .field select{
     width:100%;
     padding:9px 11px;
-    border:1.5px solid #ecebf5;
+    border:1.5px solid var(--chrome-input-border);
     border-radius:10px;
     font-family:inherit;
     font-size:14px;
-    background:#fbfbfe;
-    color:var(--ink);
+    background:var(--chrome-input-bg);
+    color:var(--chrome-text);
   }
   .field input:focus, .field textarea:focus, .field select:focus{
     outline:2px solid var(--pink);
     outline-offset:1px;
-    background:#fff;
+    background:var(--chrome-panel-bg);
   }
   .field textarea{ resize:vertical; min-height:70px; }
   .row3{ display:flex; gap:8px; }
@@ -216,14 +276,14 @@
 
   /* --- dropzones --- */
   .dropzone{
-    border:2px dashed #d9d6ec;
+    border:2px dashed var(--chrome-dropzone-border);
     border-radius:14px;
     padding:16px;
     text-align:center;
     cursor:pointer;
     font-size:12.5px;
-    color:var(--muted);
-    background:#fbfbfe;
+    color:var(--chrome-label);
+    background:var(--chrome-dropzone-bg);
     transition:.15s;
     display:flex;
     flex-direction:column;
@@ -231,6 +291,7 @@
     gap:6px;
   }
   .dropzone.dragover{ border-color:var(--pink); background:#fff0f6; color:var(--pink); }
+  :root[data-theme="dark"] .dropzone.dragover{ background:#3a1030; }
   .dropzone img.dz-thumb{ width:56px; height:56px; object-fit:cover; border-radius:10px; }
   .expr-grid{ display:flex; gap:8px; }
   .expr-grid .dropzone{ flex:1; padding:10px; position:relative; min-height:100px; justify-content:center; }
@@ -255,7 +316,7 @@
   }
   .dz-remove:hover{ background:#e02c6d; }
 
-  .hint{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .hint{ font-size:11px; color:var(--chrome-label); margin-top:2px; }
 
   .recalc-btn{
     display:inline-flex;
@@ -263,7 +324,7 @@
     gap:6px;
     border:1.5px solid var(--hazard-red);
     color:var(--hazard-red);
-    background:#fff;
+    background:var(--chrome-btn-bg);
     font-weight:700;
     font-size:12.5px;
     padding:7px 12px;
@@ -288,7 +349,7 @@
   }
   .complete-btn.giant{ background:linear-gradient(135deg,var(--hazard-red),#ff6a3d); box-shadow:0 8px 20px rgba(232,41,28,.4); }
   .complete-btn:active{ transform:translateY(1px); }
-  .status-msg{ text-align:center; font-size:12px; color:var(--muted); min-height:16px; margin-top:6px; }
+  .status-msg{ text-align:center; font-size:12px; color:var(--chrome-label); min-height:16px; margin-top:6px; }
 
   /* ================= CARD ================= */
   .card-scale-wrap{ width:fit-content; }
@@ -301,6 +362,7 @@
     overflow:hidden;
     box-shadow:0 20px 45px rgba(30,20,60,.18);
     border:3px solid #fff;
+    color:#1b1b2f;
     transition:width .25s, background .25s;
   }
   .card.landscape{ width:560px; }
@@ -548,12 +610,12 @@
   /* ---- crop modal ---- */
   .modal{ position:fixed; inset:0; background:rgba(20,15,35,.55); display:flex; align-items:center; justify-content:center; z-index:50; }
   .modal.hidden{ display:none; }
-  .modal-box{ background:#fff; border-radius:18px; padding:20px; width:min(360px, 92vw); text-align:center; }
+  .modal-box{ background:var(--chrome-panel-bg); border-radius:18px; padding:20px; width:min(360px, 92vw); text-align:center; color:var(--chrome-text); }
   .modal-box h3{ font-family:'M PLUS Rounded 1c'; margin:0 0 12px; font-size:16px; }
   .crop-stage{ display:flex; justify-content:center; background:#111; border-radius:12px; overflow:hidden; margin-bottom:12px; touch-action:none; }
   #cropCanvas{ cursor:grab; display:block; }
   #cropCanvas:active{ cursor:grabbing; }
-  .modal-box label{ font-size:12px; color:var(--muted); display:block; margin-bottom:14px; }
+  .modal-box label{ font-size:12px; color:var(--chrome-label); display:block; margin-bottom:14px; }
   .modal-box input[type=range]{ width:100%; }
   .modal-actions{ display:flex; gap:10px; }
   .modal-actions button{ flex:1; padding:10px; border-radius:10px; border:none; font-weight:700; cursor:pointer; font-size:13.5px; }
@@ -564,9 +626,15 @@
 <body>
 
 <div class="topbar">
-  <div></div>
+  <div class="theme-switch-wrap">
+    <button type="button" class="theme-switch" id="themeSwitch" aria-pressed="false" title="Light / Dark">
+      <span class="theme-switch-track">
+        <span class="theme-switch-thumb" id="themeSwitchThumb">☀️</span>
+      </span>
+    </button>
+  </div>
   <div class="topbar-center">
-    <h1 data-i18n="appTitle">🌈 アバター紹介カードメーカー</h1>
+    <h1 data-i18n="appTitle">アバター紹介カードメーカー</h1>
     <p data-i18n="appSubtitle">VRChatアバターのプロフィールカードを作って、PNGで書き出そう</p>
   </div>
   <div class="lang-select-wrap">
@@ -766,7 +834,8 @@
 
   /* ================= i18n ================= */
   const TR = {
-    appTitle:{ja:'🌈 アバター紹介カードメーカー',en:'🌈 Avatar Profile Card Maker',ko:'🌈 아바타 소개 카드 메이커',zh:'🌈 Avatar 角色卡制作器'},
+    appTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
+    pageTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
     appSubtitle:{ja:'VRChatアバターのプロフィールカードを作って、PNGで書き出そう',en:'Create a profile card for your VRChat avatar and export it as PNG',ko:'VRChat 아바타 프로필 카드를 만들고 PNG로 내보내세요',zh:'制作你的 VRChat 角色资料卡,并导出为 PNG'},
     modeNormal:{ja:'🐣 通常サイズ',en:'🐣 Normal Size',ko:'🐣 일반 사이즈',zh:'🐣 普通尺寸'},
     modeGiant:{ja:'🏙️ 巨大サイズ',en:'🏙️ Giant Size',ko:'🏙️ 거대 사이즈',zh:'🏙️ 巨大尺寸'},
@@ -856,6 +925,7 @@
   }
   function applyI18n(){
     document.documentElement.lang = currentLang;
+    document.title = t('pageTitle');
     document.querySelectorAll('[data-i18n]').forEach(el=>{
       el.textContent = t(el.dataset.i18n);
     });
@@ -879,6 +949,29 @@
   };
 
   const $ = (id)=>document.getElementById(id);
+
+  /* ================= theme (light / dark, persisted) ================= */
+  const THEME_STORAGE_KEY = 'avatarCardMaker.theme';
+  function getStoredTheme(){
+    try{ return localStorage.getItem(THEME_STORAGE_KEY); }
+    catch(e){ return null; }
+  }
+  function storeTheme(v){
+    try{ localStorage.setItem(THEME_STORAGE_KEY, v); }
+    catch(e){ /* ストレージが使えない環境ではメモリ上の状態のみで動作 */ }
+  }
+  let currentTheme = getStoredTheme() === 'dark' ? 'dark' : 'light';
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    $('themeSwitchThumb').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    $('themeSwitch').setAttribute('aria-pressed', String(currentTheme === 'dark'));
+  }
+  $('themeSwitch').addEventListener('click', ()=>{
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme();
+    storeTheme(currentTheme);
+  });
 
   /* ---------------- number / localized unit formatting ---------------- */
   const UNIT_WORDS = {
@@ -1375,6 +1468,7 @@
 
   /* ---------------- init ---------------- */
   applyI18n();
+  applyTheme();
   updatePhotoHint();
   runAutoCalc();
   renderAll();
