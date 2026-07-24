@@ -41,8 +41,10 @@
     --chrome-btn-bg:#1c1c26;
   }
   *{box-sizing:border-box;}
+  html{ overflow-x:hidden; }
   body{
     margin:0;
+    overflow-x:hidden;
     font-family:'Zen Kaku Gothic New','Noto Sans KR','Noto Sans SC', sans-serif;
     background:
       radial-gradient(circle at 12% 8%, #ffe1ee 0%, transparent 45%),
@@ -352,9 +354,10 @@
   .status-msg{ text-align:center; font-size:12px; color:var(--chrome-label); min-height:16px; margin-top:6px; }
 
   /* ================= CARD ================= */
-  .card-scale-wrap{ width:fit-content; }
+  .card-scale-wrap{ width:fit-content; max-width:100%; }
   .card{
     width:440px;
+    max-width:calc(100vw - 48px);
     border-radius:26px;
     background:var(--card-bg);
     padding:20px;
@@ -365,7 +368,7 @@
     color:#1b1b2f;
     transition:width .25s, background .25s;
   }
-  .card.landscape{ width:560px; }
+  .card.landscape{ width:560px; max-width:calc(100vw - 48px); }
   .card.giant{ background:var(--hazard-dark); color:#f4f4f8; }
   .card[data-tier="final"]{ background:#050505; }
   /* ★50以上(終焉宣言): TERAバッジ/リボンと警報バーの配色を反転させる */
@@ -605,6 +608,13 @@
     .app{ flex-direction:column; align-items:center; }
     .preview-panel{ position:static; }
     .form-panel{ max-width:460px; width:100%; }
+  }
+  @media (max-width:480px){
+    .app{ padding:12px 12px 40px; gap:18px; }
+    .topbar{ padding:16px 12px 8px; grid-template-columns:auto 1fr auto; }
+    .topbar h1{ font-size:19px; }
+    .topbar p{ font-size:11px; }
+    .form-panel{ padding:16px; }
   }
 
   /* ---- crop modal ---- */
