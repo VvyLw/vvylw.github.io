@@ -232,6 +232,7 @@
   .form-panel.giant-theme .seg-toggle.orient{ background:#1f1f2b; }
   .form-panel.giant-theme .seg-toggle.orient button{ color:#8f8fa8; }
   .form-panel.giant-theme .seg-toggle.orient button.active{ background:var(--hazard-red); color:#fff; }
+  .form-panel.giant-theme .recalc-btn{ background:#1f1f2b; }
 
   /* --- form --- */
   fieldset{ border:none; padding:0; margin:0 0 20px; }
@@ -368,7 +369,35 @@
     color:#1b1b2f;
     transition:width .25s, background .25s;
   }
-  .card.landscape{ width:560px; max-width:calc(100vw - 48px); }
+  .card.landscape{ width:760px; max-width:calc(100vw - 48px); }
+  .card-body{ display:flex; flex-direction:column; }
+  .card.landscape .card-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "namearea statarea"
+      "photo    photo"
+      "quote    quote"
+      "desc     desc";
+    column-gap:18px;
+    row-gap:10px;
+    align-items:start;
+  }
+  .card.landscape .card-media{ grid-area:photo; }
+  .card.landscape .name-banner{ grid-area:namearea; margin-top:0; align-self:center; }
+  .card.landscape .stat-grid{ grid-area:statarea; margin-bottom:0; align-self:center; }
+  .card.landscape .quote-bubble{ grid-area:quote; }
+  .card.landscape .desc-block{ grid-area:desc; }
+  /* 巨大モードは写真をフル幅のまま大きく見せ、危険度情報は説明文と横並びにする */
+  .card.landscape.giant .card-body{
+    grid-template-areas:
+      "namearea statarea"
+      "photo    photo"
+      "quote    quote"
+      "danger   desc";
+  }
+  .card.landscape.giant .danger-block{ grid-area:danger; margin:0; align-self:start; }
+  .card.landscape.giant .desc-block{ align-self:start; }
   .card.giant{ background:var(--hazard-dark); color:#f4f4f8; }
   .card[data-tier="final"]{ background:#050505; }
   /* ★50以上(終焉宣言): TERAバッジ/リボンと警報バーの配色を反転させる */
@@ -420,7 +449,7 @@
     border:5px solid #fff;
     transition:aspect-ratio .25s;
   }
-  .card.landscape .photo-frame{ aspect-ratio:5/4; }
+  .card.landscape .photo-frame{ aspect-ratio:16/9; }
   .card.giant .photo-frame{ border:5px solid var(--tier-accent, var(--hazard-red)); border-radius:10px; transform:none; }
   .photo-frame img{ width:100%; height:100%; object-fit:cover; }
   .photo-frame .ph-empty{ color:#b9b6d6; font-size:13px; font-family:'M PLUS Rounded 1c'; }
@@ -444,8 +473,9 @@
     background:linear-gradient(120deg,#fff0f6,#eafff6);
   }
   .card.giant .name-text{ background:linear-gradient(120deg, var(--tier-dark-bg, #2a0d0d), #1c1c26); color:#fff; }
-  .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; }
+  .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; display:flex; flex-direction:column; gap:2px; }
   .card.giant .subtitle{ color:#ff9a86; }
+  .subtitle-line.origin-line{ opacity:.85; }
 
   .quote-bubble{
     position:relative;
@@ -772,46 +802,50 @@
         <div class="ribbon" id="p-ribbon">MEGA</div>
         <div class="hazard-bar"><span id="p-hazard-text">⚠ 危険生物警報 ⚠</span></div>
 
-        <div class="photo-wrap">
-          <div class="photo-frame" id="p-photo">
-            <span class="ph-empty" id="p-photo-empty" data-i18n="defaultPhotoEmpty">画像未設定</span>
+        <div class="card-body">
+          <div class="card-media">
+            <div class="photo-wrap">
+              <div class="photo-frame" id="p-photo">
+                <span class="ph-empty" id="p-photo-empty" data-i18n="defaultPhotoEmpty">画像未設定</span>
+              </div>
+              <div class="sticker-row" id="p-stickers"></div>
+            </div>
           </div>
-          <div class="sticker-row" id="p-stickers"></div>
-        </div>
 
-        <div class="quote-bubble" id="p-quote" style="display:none"></div>
+          <div class="quote-bubble" id="p-quote" style="display:none"></div>
 
-        <div class="name-banner">
-          <div class="name-text" id="p-name">アバター名</div>
-          <div class="subtitle" id="p-origin"></div>
-        </div>
-
-        <div class="stat-grid" id="p-statgrid">
-          <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
-          <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
-          <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
-        </div>
-
-        <div class="danger-block">
-          <div class="danger-head">
-            <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
-            <span class="mega-badge" id="p-mega-badge">MEGA</span>
+          <div class="name-banner">
+            <div class="name-text" id="p-name">アバター名</div>
+            <div class="subtitle" id="p-origin"></div>
           </div>
-          <div class="stars-row" id="p-stars">-</div>
-          <div class="damage-table">
-            <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
-          </div>
-          <div class="extra-chip-row" id="p-extra"></div>
-        </div>
 
-        <div class="desc-block">
-          <div class="desc-eyebrow" data-i18n="eyebrowProfile">PROFILE</div>
-          <div class="desc-text" id="p-desc">ここに紹介文が表示されます。</div>
+          <div class="stat-grid" id="p-statgrid">
+            <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
+            <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
+            <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
+          </div>
+
+          <div class="danger-block">
+            <div class="danger-head">
+              <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
+              <span class="mega-badge" id="p-mega-badge">MEGA</span>
+            </div>
+            <div class="stars-row" id="p-stars">-</div>
+            <div class="damage-table">
+              <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
+            </div>
+            <div class="extra-chip-row" id="p-extra"></div>
+          </div>
+
+          <div class="desc-block">
+            <div class="desc-eyebrow" data-i18n="eyebrowProfile">PROFILE</div>
+            <div class="desc-text" id="p-desc">ここに紹介文が表示されます。</div>
+          </div>
         </div>
 
         <div class="footer-mark" data-i18n="footerMark">AVATAR INTRODUCTION CARD</div>
@@ -1242,6 +1276,7 @@
       img.onload = ()=>{
         cropImg = img;
         if(aspect==='square'){ frameW=300; frameH=300; $('cropTitle').textContent=t('cropTitleExpr'); }
+        else if(aspect==='landscape'){ frameW=384; frameH=216; $('cropTitle').textContent=t('cropTitleMain'); }
         else { frameW=300; frameH=375; $('cropTitle').textContent=t('cropTitleMain'); }
         cropCanvas.width=frameW; cropCanvas.height=frameH;
         cropBaseScale = Math.max(frameW/img.width, frameH/img.height);
@@ -1309,7 +1344,7 @@
     const zoneEl = $('dz-avatar');
     function acceptFile(file){
       if(!file || !file.type.startsWith('image/')) return;
-      openCropEditor(file, 'portrait', (dataUrl)=>{
+      openCropEditor(file, state.orientation === 'landscape' ? 'landscape' : 'portrait', (dataUrl)=>{
         state.avatar = dataUrl;
         zoneEl.innerHTML = `<img class="dz-thumb" src="${dataUrl}"><span>${t('dzMainChangeText')}</span>`;
         renderAll();
@@ -1388,11 +1423,20 @@
     $('p-name').textContent = $('f-name').value.trim() || t('defaultName');
     const origin = $('f-origin').value.trim();
     const subtitle = $('f-subtitle').value.trim();
-    let subtitleText = '';
-    if(subtitle && origin) subtitleText = `${subtitle} / ${origin}`;
-    else if(subtitle) subtitleText = subtitle;
-    else if(origin) subtitleText = origin;
-    $('p-origin').textContent = subtitleText;
+    const originEl = $('p-origin');
+    originEl.innerHTML = '';
+    if(subtitle){
+      const line1 = document.createElement('div');
+      line1.className = 'subtitle-line';
+      line1.textContent = subtitle;
+      originEl.appendChild(line1);
+    }
+    if(origin){
+      const line2 = document.createElement('div');
+      line2.className = 'subtitle-line origin-line';
+      line2.textContent = `📍 ${origin}`;
+      originEl.appendChild(line2);
+    }
 
     const quote = $('f-quote').value.trim();
     const quoteEl = $('p-quote');
