@@ -113,7 +113,63 @@
   }
   .seg-toggle button.active{ background:var(--ink); color:#fff; }
   .seg-toggle button[data-mode="giant"].active{ background:var(--hazard-red); }
-  .seg-toggle.orient{ flex:0 0 150px; }
+  .seg-toggle.orient{ flex:0 0 150px; margin-left:auto; }
+
+  /* --- mode switch (⚠ toggle) --- */
+  .mode-switch{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+    user-select:none;
+    background:var(--lavender);
+    border-radius:999px;
+    padding:4px;
+  }
+  .form-panel.giant-theme .mode-switch{ background:#2a0d0d; }
+  .mode-switch-track{
+    width:52px; height:30px;
+    border-radius:999px;
+    background:#fff;
+    position:relative;
+    flex:0 0 auto;
+    transition:background .25s;
+    box-shadow:inset 0 0 0 1.5px #e3e0f5;
+  }
+  .mode-switch.giant .mode-switch-track{ background:#3a1010; box-shadow:inset 0 0 0 1.5px #6a2020; }
+  .mode-switch-thumb{
+    position:absolute;
+    top:3px; left:3px;
+    width:24px; height:24px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    transition:left .25s, background .25s;
+  }
+  .mode-switch.giant .mode-switch-thumb{ left:25px; background:var(--hazard-red); box-shadow:0 0 8px 2px rgba(232,41,28,.6); }
+
+  /* --- giant-theme: dark form panel when 巨大サイズ is active --- */
+  .form-panel.giant-theme{ background:#14141c; }
+  .form-panel.giant-theme .field label{ color:#b9b6cf; }
+  .form-panel.giant-theme .hint{ color:#8f8fa8; }
+  .form-panel.giant-theme .field input[type="text"],
+  .form-panel.giant-theme .field input[type="number"],
+  .form-panel.giant-theme .field textarea,
+  .form-panel.giant-theme .field select{
+    background:#1f1f2b;
+    border-color:#3a3a4a;
+    color:#f0f0f5;
+  }
+  .form-panel.giant-theme .field input:focus,
+  .form-panel.giant-theme .field textarea:focus,
+  .form-panel.giant-theme .field select:focus{ background:#26263a; }
+  .form-panel.giant-theme .dropzone{ background:#1f1f2b; border-color:#3a3a4a; color:#8f8fa8; }
+  .form-panel.giant-theme .dropzone.dragover{ background:#2a1010; border-color:var(--pink); }
+  .form-panel.giant-theme .seg-toggle.orient{ background:#1f1f2b; }
+  .form-panel.giant-theme .seg-toggle.orient button{ color:#8f8fa8; }
+  .form-panel.giant-theme .seg-toggle.orient button.active{ background:var(--hazard-red); color:#fff; }
 
   /* --- form --- */
   fieldset{ border:none; padding:0; margin:0 0 20px; }
@@ -420,36 +476,64 @@
   }
   .card.mega .ribbon{ display:block; }
 
-  /* ---- GIGA / TERA: ribbon burns with an animated flame effect ---- */
-  @keyframes fireFlicker{
+  /* ---- GIGA: red/orange flame effect on badge & ribbon ---- */
+  @keyframes fireFlickerGiga{
     0%{ background-position:0% 50%; }
-    50%{ background-position:100% 50%; }
+    30%{ background-position:70% 50%; }
+    55%{ background-position:40% 50%; }
+    80%{ background-position:100% 50%; }
     100%{ background-position:0% 50%; }
   }
-  @keyframes flameJitter{
-    0%,100%{ transform:rotate(38deg) scale(1); }
-    25%{ transform:rotate(36.5deg) scale(1.02); }
-    50%{ transform:rotate(39.5deg) scale(0.98); }
-    75%{ transform:rotate(37.5deg) scale(1.01); }
+  @keyframes fireGlowGiga{
+    0%,100%{ text-shadow:0 0 3px #ff5500, 0 0 8px #ff2200, 0 0 16px #ff6a00; }
+    50%{ text-shadow:0 0 5px #ffcc00, 0 0 12px #ff3d00, 0 0 24px #ff2200; }
   }
   .card[data-tier="giga"] .mega-badge,
-  .card[data-tier="tera"] .mega-badge,
-  .card[data-tier="giga"] .ribbon,
-  .card[data-tier="tera"] .ribbon{
-    background:linear-gradient(90deg,#7a1a00,#ff3d00,#ffb300,#ff2200,#ffde59,#ff3d00,#7a1a00);
-    background-size:300% 100%;
-    animation:fireFlicker 1s linear infinite;
+  .card[data-tier="giga"] .ribbon{
+    background:linear-gradient(100deg,#3d0800,#ff3d00,#ffb300,#fff2b0,#ff2200,#7a1a00,#ff3d00,#ffde59);
+    background-size:400% 100%;
+    animation:fireFlickerGiga .8s ease-in-out infinite, fireGlowGiga .6s ease-in-out infinite;
     color:#fff6df;
-    text-shadow:0 0 3px #ff5500, 0 0 8px #ff2200, 0 0 14px #ff6a00;
   }
-  .card[data-tier="giga"] .ribbon,
+  .card[data-tier="giga"] .ribbon{
+    animation:fireFlickerGiga .8s ease-in-out infinite, fireGlowGiga .6s ease-in-out infinite, flameJitter .4s ease-in-out infinite;
+    box-shadow:0 0 14px 4px rgba(255,80,0,.75), 0 0 26px 8px rgba(255,140,0,.35), 0 3px 8px rgba(0,0,0,.3);
+  }
+
+  /* ---- TERA: purple flame effect on badge & ribbon ---- */
+  @keyframes fireFlickerTera{
+    0%{ background-position:0% 50%; }
+    30%{ background-position:70% 50%; }
+    55%{ background-position:40% 50%; }
+    80%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+  }
+  @keyframes fireGlowTera{
+    0%,100%{ text-shadow:0 0 3px #c400ff, 0 0 8px #7a00cc, 0 0 16px #b000ff; }
+    50%{ text-shadow:0 0 5px #ffb3ff, 0 0 12px #d400ff, 0 0 24px #7a00cc; }
+  }
+  .card[data-tier="tera"] .mega-badge,
   .card[data-tier="tera"] .ribbon{
-    animation:fireFlicker 1s linear infinite, flameJitter .5s ease-in-out infinite;
-    box-shadow:0 0 10px 2px rgba(255,90,0,.65), 0 3px 8px rgba(0,0,0,.3);
+    background:linear-gradient(100deg,#1a0033,#8e2de2,#c86dff,#fce4ff,#d400ff,#3d0066,#8e2de2,#ff8ef7);
+    background-size:400% 100%;
+    animation:fireFlickerTera .8s ease-in-out infinite, fireGlowTera .6s ease-in-out infinite;
+    color:#fff2ff;
   }
+  .card[data-tier="tera"] .ribbon{
+    animation:fireFlickerTera .8s ease-in-out infinite, fireGlowTera .6s ease-in-out infinite, flameJitter .4s ease-in-out infinite;
+    box-shadow:0 0 14px 4px rgba(180,0,255,.75), 0 0 26px 8px rgba(216,110,255,.35), 0 3px 8px rgba(0,0,0,.3);
+  }
+
+  @keyframes flameJitter{
+    0%,100%{ transform:rotate(38deg) scale(1); }
+    25%{ transform:rotate(36deg) scale(1.03); }
+    50%{ transform:rotate(40deg) scale(0.97); }
+    75%{ transform:rotate(37deg) scale(1.015); }
+  }
+
   @media (prefers-reduced-motion:reduce){
-    .card[data-tier="giga"] .mega-badge, .card[data-tier="tera"] .mega-badge,
-    .card[data-tier="giga"] .ribbon, .card[data-tier="tera"] .ribbon{ animation:none; background-position:0% 50%; }
+    .card[data-tier="giga"] .mega-badge, .card[data-tier="giga"] .ribbon,
+    .card[data-tier="tera"] .mega-badge, .card[data-tier="tera"] .ribbon{ animation:none; background-position:0% 50%; }
   }
   @media (prefers-reduced-motion:reduce){
     .card.mega::before{ animation:none; }
@@ -497,11 +581,12 @@
 
 <div class="app">
   <!-- ================= FORM ================= -->
-  <div class="form-panel">
+  <div class="form-panel" id="formPanel">
     <div class="toggle-row">
-      <div class="seg-toggle" id="modeToggle">
-        <button type="button" class="active" data-mode="normal" data-i18n="modeNormal">🐣 通常サイズ</button>
-        <button type="button" data-mode="giant" data-i18n="modeGiant">🏙️ 巨大サイズ</button>
+      <div class="mode-switch" id="modeSwitch" role="button" tabindex="0" aria-pressed="false">
+        <div class="mode-switch-track">
+          <div class="mode-switch-thumb" id="modeSwitchThumb"><span id="modeSwitchIcon">🐣</span></div>
+        </div>
       </div>
       <div class="seg-toggle orient" id="orientToggle">
         <button type="button" class="active" data-orient="portrait" data-i18n="orientPortrait">縦</button>
@@ -516,7 +601,7 @@
           <div class="dropzone" id="dz-avatar" tabindex="0">
             <span id="dz-avatar-text" data-i18n="dzMainText">クリック or ドラッグ&ドロップで画像を選択</span>
           </div>
-          <div class="hint" data-i18n="hintPhoto">4:5(横向きの場合は5:4)でトリミングされます</div>
+          <div class="hint" id="p-photo-hint">4:5でトリミングされます</div>
         </div>
       </fieldset>
 
@@ -690,7 +775,8 @@
     legendPhoto:{ja:'📸 メイン画像',en:'📸 Main Image',ko:'📸 메인 이미지',zh:'📸 主图片'},
     dzMainText:{ja:'クリック or ドラッグ&ドロップで画像を選択',en:'Click or drag & drop to select an image',ko:'클릭하거나 드래그&드롭으로 이미지를 선택하세요',zh:'点击或拖放以选择图片'},
     dzMainChangeText:{ja:'クリックで変更',en:'Click to change',ko:'클릭하여 변경',zh:'点击以更改'},
-    hintPhoto:{ja:'4:5(横向きの場合は5:4)でトリミングされます',en:'Cropped to 4:5 (5:4 in landscape mode)',ko:'4:5 비율로 잘립니다(가로 모드는 5:4)',zh:'将按 4:5 裁剪(横向模式为 5:4)'},
+    hintPhotoPortrait:{ja:'4:5でトリミングされます',en:'Cropped to 4:5',ko:'4:5 비율로 잘립니다',zh:'将按 4:5 裁剪'},
+    hintPhotoLandscape:{ja:'5:4でトリミングされます',en:'Cropped to 5:4',ko:'5:4 비율로 잘립니다',zh:'将按 5:4 裁剪'},
     legendExpr:{ja:'😊 表情差分(任意・最大3枚)',en:'😊 Expression Variants (optional, up to 3)',ko:'😊 표정 차분(선택, 최대 3장)',zh:'😊 表情差分(可选,最多3张)'},
     exprSlot1:{ja:'1枚目',en:'Slot 1',ko:'1번째',zh:'第1张'},
     exprSlot2:{ja:'2枚目',en:'Slot 2',ko:'2번째',zh:'第2张'},
@@ -780,6 +866,7 @@
   document.getElementById('langSelect').addEventListener('change', (e)=>{
     currentLang = e.target.value;
     applyI18n();
+    updatePhotoHint();
     renderAll();
   });
 
@@ -831,28 +918,27 @@
     if(n >= 1) return comma(n);
     return n.toFixed(3);
   }
-  function rangeStr(min,max,unitWord){
+  function valueStr(value,unitWord){
     const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
-    return `${uw.about}${comma(min)}${unitWord}${uw.sep}${comma(max)}${unitWord}`;
+    return `${uw.about}${comma(value)}${unitWord}`;
   }
   // 日本語のときは人数・棟数・都市数も万/億/兆/京/垓表記にする。他言語はカンマ区切りのまま。
-  function countStr(min,max,unitWord){
+  function countStr(value,unitWord){
     const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
     if(currentLang === 'ja'){
-      return `${uw.about}${formatBigNumber(min)}${unitWord}${uw.sep}${formatBigNumber(max)}${unitWord}`;
+      return `${uw.about}${formatBigNumber(value)}${unitWord}`;
     }
-    return rangeStr(min,max,unitWord);
+    return valueStr(value,unitWord);
   }
   // 被害総額: 言語ごとの通貨に換算。日本語で垓を超える場合は「修復不能」。
-  function costStr(minJPY,maxJPY){
+  function costStr(valueJPY){
     const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
     const conv = CURRENCY[currentLang] || CURRENCY.ja;
-    if(currentLang === 'ja' && (minJPY >= JA_IRREPARABLE_THRESHOLD || maxJPY >= JA_IRREPARABLE_THRESHOLD)){
+    if(currentLang === 'ja' && valueJPY >= JA_IRREPARABLE_THRESHOLD){
       return t('irreparable');
     }
-    const minLocal = minJPY * conv.rateFromJPY;
-    const maxLocal = maxJPY * conv.rateFromJPY;
-    return `${uw.about}${formatBigNumber(minLocal)}${conv.unit}${uw.sep}${formatBigNumber(maxLocal)}${conv.unit}`;
+    const valueLocal = valueJPY * conv.rateFromJPY;
+    return `${uw.about}${formatBigNumber(valueLocal)}${conv.unit}`;
   }
 
   /* ---------------- damage calculation ---------------- */
@@ -871,29 +957,27 @@
     const areaBase = 0.07 * Math.pow(1.45, n);
     const costBase = buildingsBase*2.5e8 + areaBase*6e9;
 
-    function spread(base, lowMul, highMul){
-      const lo = base * (lowMul + Math.random()*0.08);
-      const hi = base * (highMul + Math.random()*0.15);
-      return [lo, Math.max(hi, lo*1.05)];
+    // ベース値に多少のばらつきを加えた単体の概算値を算出する
+    function jitter(base, lowMul, highMul){
+      return base * (lowMul + Math.random()*(highMul-lowMul));
     }
-    const [dMin,dMax] = spread(deathsBase, 0.72, 1.2);
-    const [iMin,iMax] = spread(injuredBase, 0.72, 1.2);
-    const [cMin,cMax] = spread(Math.max(citiesBase,0), 0.7, 1.3);
-    const [bMin,bMax] = spread(buildingsBase, 0.7, 1.3);
-    const [aMin,aMax] = spread(areaBase, 0.7, 1.3);
-    const [costMin,costMax] = spread(costBase, 0.7, 1.3);
+    const deathsVal = jitter(deathsBase, 0.85, 1.2);
+    const injuredVal = jitter(injuredBase, 0.85, 1.2);
+    const citiesVal = jitter(Math.max(citiesBase,0), 0.85, 1.2);
+    const buildingsVal = jitter(buildingsBase, 0.85, 1.2);
+    const areaVal = jitter(areaBase, 0.85, 1.2);
+    const costVal = jitter(costBase, 0.85, 1.2);
 
     const areaCfg = AREA_UNIT[currentLang] || AREA_UNIT.ja;
-    const aMinDisp = aMin * areaCfg.factor;
-    const aMaxDisp = aMax * areaCfg.factor;
+    const areaValDisp = areaVal * areaCfg.factor;
 
     return {
-      deaths: countStr(dMin,dMax,uw.people),
-      injured: countStr(iMin,iMax,uw.people),
-      cities: countStr(cMin,cMax,uw.cities),
-      buildings: countStr(bMin,bMax,uw.buildings),
-      area: `${uw.about}${aMinDisp.toFixed(1)}${uw.sep}${aMaxDisp.toFixed(1)}${areaCfg.unit}`,
-      cost: costStr(costMin, costMax)
+      deaths: countStr(deathsVal, uw.people),
+      injured: countStr(injuredVal, uw.people),
+      cities: countStr(citiesVal, uw.cities),
+      buildings: countStr(buildingsVal, uw.buildings),
+      area: `${uw.about}${areaValDisp.toFixed(1)}${areaCfg.unit}`,
+      cost: costStr(costVal)
     };
   }
   function runAutoCalc(){
@@ -975,27 +1059,42 @@
   }
 
   /* ---------------- mode / orientation toggles ---------------- */
-  document.querySelectorAll('#modeToggle button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      state.mode = btn.dataset.mode;
-      document.querySelectorAll('.giant-only').forEach(el=>{
-        el.style.display = (state.mode==='giant') ? 'block' : 'none';
-      });
-      $('theCard').classList.toggle('giant', state.mode==='giant');
-      $('completeBtn').classList.toggle('giant', state.mode==='giant');
-      if(state.mode==='giant' && !$('f-deaths').value){ runAutoCalc(); }
-      if(!$('f-weight').value){ autoEstimateWeight(false); }
-      renderAll();
+  function setMode(mode){
+    state.mode = mode;
+    const isGiant = mode === 'giant';
+    $('modeSwitch').classList.toggle('giant', isGiant);
+    $('modeSwitch').setAttribute('aria-pressed', String(isGiant));
+    $('modeSwitchIcon').textContent = isGiant ? '⚠' : '🐣';
+    $('formPanel').classList.toggle('giant-theme', isGiant);
+    document.querySelectorAll('.giant-only').forEach(el=>{
+      el.style.display = isGiant ? 'block' : 'none';
     });
+    $('theCard').classList.toggle('giant', isGiant);
+    $('completeBtn').classList.toggle('giant', isGiant);
+    if(isGiant && !$('f-deaths').value){ runAutoCalc(); }
+    if(!$('f-weight').value){ autoEstimateWeight(false); }
+    renderAll();
+  }
+  $('modeSwitch').addEventListener('click', ()=>{
+    setMode(state.mode === 'giant' ? 'normal' : 'giant');
   });
+  $('modeSwitch').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      setMode(state.mode === 'giant' ? 'normal' : 'giant');
+    }
+  });
+
+  function updatePhotoHint(){
+    $('p-photo-hint').textContent = state.orientation === 'landscape' ? t('hintPhotoLandscape') : t('hintPhotoPortrait');
+  }
   document.querySelectorAll('#orientToggle button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('#orientToggle button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       state.orientation = btn.dataset.orient;
       $('theCard').classList.toggle('landscape', state.orientation==='landscape');
+      updatePhotoHint();
     });
   });
 
@@ -1276,6 +1375,7 @@
 
   /* ---------------- init ---------------- */
   applyI18n();
+  updatePhotoHint();
   runAutoCalc();
   renderAll();
 })();
