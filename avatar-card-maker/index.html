@@ -917,7 +917,18 @@
     zeroCost:{ja:'0円',en:'0 USD',ko:'0원',zh:'0元'},
     irreparable:{ja:'修復不能',en:'Beyond Repair',ko:'복구 불가능',zh:'无法修复'},
   };
-  let currentLang = 'ja';
+  const LANG_STORAGE_KEY = 'avatarCardMaker.lang';
+  const SUPPORTED_LANGS = ['ja','en','ko','zh'];
+  function getStoredLang(){
+    try{ return localStorage.getItem(LANG_STORAGE_KEY); }
+    catch(e){ return null; }
+  }
+  function storeLang(v){
+    try{ localStorage.setItem(LANG_STORAGE_KEY, v); }
+    catch(e){ /* ストレージが使えない環境ではメモリ上の状態のみで動作 */ }
+  }
+  const storedLang = getStoredLang();
+  let currentLang = SUPPORTED_LANGS.includes(storedLang) ? storedLang : 'ja';
   function t(key){
     const e = TR[key];
     if(!e) return key;
@@ -933,8 +944,10 @@
       el.placeholder = t(el.dataset.i18nPh);
     });
   }
+  document.getElementById('langSelect').value = currentLang;
   document.getElementById('langSelect').addEventListener('change', (e)=>{
     currentLang = e.target.value;
+    storeLang(currentLang);
     applyI18n();
     updatePhotoHint();
     renderAll();
