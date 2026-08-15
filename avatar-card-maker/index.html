@@ -20,10 +20,31 @@
     --hazard-red:#e8291c;
     --hazard-yellow:#ffd400;
     --hazard-dark:#14141c;
+    /* アプリ全体の「クローム」(カード自体は含まない)用のテーマ変数 */
+    --chrome-panel-bg:#ffffff;
+    --chrome-input-bg:#fbfbfe;
+    --chrome-input-border:#ecebf5;
+    --chrome-label:#8a8aa3;
+    --chrome-text:#1b1b2f;
+    --chrome-dropzone-bg:#fbfbfe;
+    --chrome-dropzone-border:#d9d6ec;
+    --chrome-btn-bg:#ffffff;
+  }
+  :root[data-theme="dark"]{
+    --chrome-panel-bg:#1c1c26;
+    --chrome-input-bg:#26263a;
+    --chrome-input-border:#3a3a4a;
+    --chrome-label:#a9a6c0;
+    --chrome-text:#f0f0f5;
+    --chrome-dropzone-bg:#26263a;
+    --chrome-dropzone-border:#3a3a4a;
+    --chrome-btn-bg:#1c1c26;
   }
   *{box-sizing:border-box;}
+  html{ overflow-x:hidden; }
   body{
     margin:0;
+    overflow-x:hidden;
     font-family:'Zen Kaku Gothic New','Noto Sans KR','Noto Sans SC', sans-serif;
     background:
       radial-gradient(circle at 12% 8%, #ffe1ee 0%, transparent 45%),
@@ -31,7 +52,16 @@
       var(--lavender);
     color:var(--ink);
     min-height:100vh;
+    transition:background .25s, color .25s;
   }
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(circle at 12% 8%, #2a1030 0%, transparent 45%),
+      radial-gradient(circle at 90% 12%, #08302a 0%, transparent 40%),
+      #0f0f16;
+    color:#e8e6f5;
+  }
+  :root[data-theme="dark"] .topbar p{ color:#a9a6c0; }
   .topbar{
     display:grid;
     grid-template-columns:1fr auto 1fr;
@@ -49,14 +79,45 @@
   }
   .topbar p{ margin:0; color:var(--muted); font-size:12.5px; }
   .lang-select-wrap{ justify-self:end; }
+  .theme-switch-wrap{ justify-self:start; }
+  .theme-switch{
+    border:none;
+    background:transparent;
+    padding:0;
+    cursor:pointer;
+    display:inline-flex;
+  }
+  .theme-switch-track{
+    display:inline-flex;
+    align-items:center;
+    width:52px; height:30px;
+    border-radius:999px;
+    background:var(--chrome-panel-bg);
+    border:1.5px solid var(--chrome-input-border);
+    position:relative;
+    transition:background .25s, border-color .25s;
+  }
+  .theme-switch-thumb{
+    position:absolute;
+    top:3px; left:3px;
+    width:24px; height:24px;
+    border-radius:50%;
+    background:#ffd54f;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    transition:left .25s, background .25s;
+  }
+  :root[data-theme="dark"] .theme-switch-track{ background:#1c1c26; border-color:#3a3a4a; }
+  :root[data-theme="dark"] .theme-switch-thumb{ left:25px; background:#2b2b45; }
   #langSelect{
-    border:1.5px solid #e3e0f5;
+    border:1.5px solid var(--chrome-input-border);
     border-radius:10px;
     padding:7px 10px;
     font-size:13px;
     font-family:inherit;
-    background:#fff;
-    color:var(--ink);
+    background:var(--chrome-panel-bg);
+    color:var(--chrome-text);
     cursor:pointer;
   }
 
@@ -72,10 +133,11 @@
   .form-panel{
     flex:1 1 420px;
     max-width:460px;
-    background:#fff;
+    background:var(--chrome-panel-bg);
     border-radius:20px;
     padding:22px;
     box-shadow:0 10px 30px rgba(30,20,60,.08);
+    transition:background .25s;
   }
   .preview-panel{
     flex:0 0 auto;
@@ -170,6 +232,7 @@
   .form-panel.giant-theme .seg-toggle.orient{ background:#1f1f2b; }
   .form-panel.giant-theme .seg-toggle.orient button{ color:#8f8fa8; }
   .form-panel.giant-theme .seg-toggle.orient button.active{ background:var(--hazard-red); color:#fff; }
+  .form-panel.giant-theme .recalc-btn{ background:#1f1f2b; }
 
   /* --- form --- */
   fieldset{ border:none; padding:0; margin:0 0 20px; }
@@ -189,7 +252,7 @@
     display:block;
     font-size:12px;
     font-weight:700;
-    color:var(--muted);
+    color:var(--chrome-label);
     margin-bottom:4px;
   }
   .field input[type="text"],
@@ -198,17 +261,17 @@
   .field select{
     width:100%;
     padding:9px 11px;
-    border:1.5px solid #ecebf5;
+    border:1.5px solid var(--chrome-input-border);
     border-radius:10px;
     font-family:inherit;
     font-size:14px;
-    background:#fbfbfe;
-    color:var(--ink);
+    background:var(--chrome-input-bg);
+    color:var(--chrome-text);
   }
   .field input:focus, .field textarea:focus, .field select:focus{
     outline:2px solid var(--pink);
     outline-offset:1px;
-    background:#fff;
+    background:var(--chrome-panel-bg);
   }
   .field textarea{ resize:vertical; min-height:70px; }
   .row3{ display:flex; gap:8px; }
@@ -216,14 +279,14 @@
 
   /* --- dropzones --- */
   .dropzone{
-    border:2px dashed #d9d6ec;
+    border:2px dashed var(--chrome-dropzone-border);
     border-radius:14px;
     padding:16px;
     text-align:center;
     cursor:pointer;
     font-size:12.5px;
-    color:var(--muted);
-    background:#fbfbfe;
+    color:var(--chrome-label);
+    background:var(--chrome-dropzone-bg);
     transition:.15s;
     display:flex;
     flex-direction:column;
@@ -231,6 +294,7 @@
     gap:6px;
   }
   .dropzone.dragover{ border-color:var(--pink); background:#fff0f6; color:var(--pink); }
+  :root[data-theme="dark"] .dropzone.dragover{ background:#3a1030; }
   .dropzone img.dz-thumb{ width:56px; height:56px; object-fit:cover; border-radius:10px; }
   .expr-grid{ display:flex; gap:8px; }
   .expr-grid .dropzone{ flex:1; padding:10px; position:relative; min-height:100px; justify-content:center; }
@@ -255,7 +319,7 @@
   }
   .dz-remove:hover{ background:#e02c6d; }
 
-  .hint{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .hint{ font-size:11px; color:var(--chrome-label); margin-top:2px; }
 
   .recalc-btn{
     display:inline-flex;
@@ -263,7 +327,7 @@
     gap:6px;
     border:1.5px solid var(--hazard-red);
     color:var(--hazard-red);
-    background:#fff;
+    background:var(--chrome-btn-bg);
     font-weight:700;
     font-size:12.5px;
     padding:7px 12px;
@@ -288,12 +352,13 @@
   }
   .complete-btn.giant{ background:linear-gradient(135deg,var(--hazard-red),#ff6a3d); box-shadow:0 8px 20px rgba(232,41,28,.4); }
   .complete-btn:active{ transform:translateY(1px); }
-  .status-msg{ text-align:center; font-size:12px; color:var(--muted); min-height:16px; margin-top:6px; }
+  .status-msg{ text-align:center; font-size:12px; color:var(--chrome-label); min-height:16px; margin-top:6px; }
 
   /* ================= CARD ================= */
-  .card-scale-wrap{ width:fit-content; }
+  .card-scale-wrap{ width:fit-content; max-width:100%; }
   .card{
     width:440px;
+    max-width:calc(100vw - 48px);
     border-radius:26px;
     background:var(--card-bg);
     padding:20px;
@@ -301,9 +366,38 @@
     overflow:hidden;
     box-shadow:0 20px 45px rgba(30,20,60,.18);
     border:3px solid #fff;
+    color:#1b1b2f;
     transition:width .25s, background .25s;
   }
-  .card.landscape{ width:560px; }
+  .card.landscape{ width:760px; max-width:calc(100vw - 48px); }
+  .card-body{ display:flex; flex-direction:column; }
+  .card.landscape .card-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "namearea statarea"
+      "photo    photo"
+      "quote    quote"
+      "desc     desc";
+    column-gap:18px;
+    row-gap:10px;
+    align-items:start;
+  }
+  .card.landscape .card-media{ grid-area:photo; }
+  .card.landscape .name-banner{ grid-area:namearea; margin-top:0; align-self:center; }
+  .card.landscape .stat-grid{ grid-area:statarea; margin-bottom:0; align-self:center; }
+  .card.landscape .quote-bubble{ grid-area:quote; }
+  .card.landscape .desc-block{ grid-area:desc; }
+  /* 巨大モードは写真をフル幅のまま大きく見せ、危険度情報は説明文と横並びにする */
+  .card.landscape.giant .card-body{
+    grid-template-areas:
+      "namearea statarea"
+      "photo    photo"
+      "quote    quote"
+      "danger   desc";
+  }
+  .card.landscape.giant .danger-block{ grid-area:danger; margin:0; align-self:start; }
+  .card.landscape.giant .desc-block{ align-self:start; }
   .card.giant{ background:var(--hazard-dark); color:#f4f4f8; }
   .card[data-tier="final"]{ background:#050505; }
   /* ★50以上(終焉宣言): TERAバッジ/リボンと警報バーの配色を反転させる */
@@ -355,7 +449,7 @@
     border:5px solid #fff;
     transition:aspect-ratio .25s;
   }
-  .card.landscape .photo-frame{ aspect-ratio:5/4; }
+  .card.landscape .photo-frame{ aspect-ratio:16/9; }
   .card.giant .photo-frame{ border:5px solid var(--tier-accent, var(--hazard-red)); border-radius:10px; transform:none; }
   .photo-frame img{ width:100%; height:100%; object-fit:cover; }
   .photo-frame .ph-empty{ color:#b9b6d6; font-size:13px; font-family:'M PLUS Rounded 1c'; }
@@ -368,7 +462,7 @@
   .sticker img{ width:100%; height:100%; object-fit:cover; }
   .card.giant .sticker{ border-color:var(--tier-accent, var(--hazard-yellow)); }
 
-  .name-banner{ margin:24px 0 10px; text-align:center; }
+  .name-banner{ margin:14px 0 10px; text-align:center; }
   .name-text{
     font-family:'M PLUS Rounded 1c', sans-serif;
     font-weight:800;
@@ -379,8 +473,9 @@
     background:linear-gradient(120deg,#fff0f6,#eafff6);
   }
   .card.giant .name-text{ background:linear-gradient(120deg, var(--tier-dark-bg, #2a0d0d), #1c1c26); color:#fff; }
-  .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; }
+  .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; display:flex; flex-direction:column; gap:2px; }
   .card.giant .subtitle{ color:#ff9a86; }
+  .subtitle-line.origin-line{ opacity:.85; }
 
   .quote-bubble{
     position:relative;
@@ -390,17 +485,17 @@
     border-radius:14px;
     font-size:13px;
     font-weight:700;
-    margin:12px 6px 18px;
+    margin:16px 6px 4px;
     text-align:center;
   }
   .quote-bubble::after{
     content:"";
-    position:absolute; left:50%; bottom:-8px; margin-left:-6px;
-    border-width:8px 6px 0 6px; border-style:solid;
-    border-color:var(--mint) transparent transparent transparent;
+    position:absolute; top:-8px; left:22px;
+    border-width:0 6px 8px 6px; border-style:solid;
+    border-color:transparent transparent var(--mint) transparent;
   }
   .card.giant .quote-bubble{ background:var(--tier-accent, var(--hazard-red)); }
-  .card.giant .quote-bubble::after{ border-color:var(--tier-accent, var(--hazard-red)) transparent transparent transparent; }
+  .card.giant .quote-bubble::after{ border-color:transparent transparent var(--tier-accent, var(--hazard-red)) transparent; }
 
   .stat-grid{
     display:grid;
@@ -422,7 +517,10 @@
   .desc-block{ margin-bottom:6px; }
   .desc-eyebrow{ font-family:'M PLUS Rounded 1c'; font-size:10.5px; font-weight:800; color:var(--pink); letter-spacing:.1em; margin-bottom:4px; }
   .card.giant .desc-eyebrow{ color:var(--tier-accent-visible, var(--hazard-yellow)); }
-  .desc-text{ font-size:13px; line-height:1.7; white-space:pre-wrap; word-break:break-word; }
+  .desc-text{ font-size:13px; line-height:1.9; white-space:pre-wrap; word-break:break-word; }
+  .pseudo-ruby{ display:inline-block; text-align:center; vertical-align:bottom; line-height:1.1; }
+  .pseudo-ruby .pr-rt{ display:block; font-size:.55em; line-height:1; opacity:.75; transform:translateY(1px); white-space:nowrap; }
+  .pseudo-ruby .pr-base{ display:block; line-height:1.3; }
 
   .danger-block{
     display:none;
@@ -544,16 +642,23 @@
     .preview-panel{ position:static; }
     .form-panel{ max-width:460px; width:100%; }
   }
+  @media (max-width:480px){
+    .app{ padding:12px 12px 40px; gap:18px; }
+    .topbar{ padding:16px 12px 8px; grid-template-columns:auto 1fr auto; }
+    .topbar h1{ font-size:19px; }
+    .topbar p{ font-size:11px; }
+    .form-panel{ padding:16px; }
+  }
 
   /* ---- crop modal ---- */
   .modal{ position:fixed; inset:0; background:rgba(20,15,35,.55); display:flex; align-items:center; justify-content:center; z-index:50; }
   .modal.hidden{ display:none; }
-  .modal-box{ background:#fff; border-radius:18px; padding:20px; width:min(360px, 92vw); text-align:center; }
+  .modal-box{ background:var(--chrome-panel-bg); border-radius:18px; padding:20px; width:min(360px, 92vw); text-align:center; color:var(--chrome-text); }
   .modal-box h3{ font-family:'M PLUS Rounded 1c'; margin:0 0 12px; font-size:16px; }
   .crop-stage{ display:flex; justify-content:center; background:#111; border-radius:12px; overflow:hidden; margin-bottom:12px; touch-action:none; }
   #cropCanvas{ cursor:grab; display:block; }
   #cropCanvas:active{ cursor:grabbing; }
-  .modal-box label{ font-size:12px; color:var(--muted); display:block; margin-bottom:14px; }
+  .modal-box label{ font-size:12px; color:var(--chrome-label); display:block; margin-bottom:14px; }
   .modal-box input[type=range]{ width:100%; }
   .modal-actions{ display:flex; gap:10px; }
   .modal-actions button{ flex:1; padding:10px; border-radius:10px; border:none; font-weight:700; cursor:pointer; font-size:13.5px; }
@@ -564,9 +669,15 @@
 <body>
 
 <div class="topbar">
-  <div></div>
+  <div class="theme-switch-wrap">
+    <button type="button" class="theme-switch" id="themeSwitch" aria-pressed="false" title="Light / Dark">
+      <span class="theme-switch-track">
+        <span class="theme-switch-thumb" id="themeSwitchThumb">☀️</span>
+      </span>
+    </button>
+  </div>
   <div class="topbar-center">
-    <h1 data-i18n="appTitle">🌈 アバター紹介カードメーカー</h1>
+    <h1 data-i18n="appTitle">アバター紹介カードメーカー</h1>
     <p data-i18n="appSubtitle">VRChatアバターのプロフィールカードを作って、PNGで書き出そう</p>
   </div>
   <div class="lang-select-wrap">
@@ -624,6 +735,7 @@
         <div class="field">
           <label for="f-desc" data-i18n="labelDesc">説明欄</label>
           <textarea id="f-desc"></textarea>
+          <div class="hint" data-i18n="hintRuby">ルビを付けたい場合は [漢字|よみ] のように書いてください(例: [吸血鬼|きゅうけつき])</div>
         </div>
         <div class="field">
           <label for="f-subtitle" data-i18n="labelSubtitle">肩書き・サブタイトル(任意)</label>
@@ -694,46 +806,50 @@
         <div class="ribbon" id="p-ribbon">MEGA</div>
         <div class="hazard-bar"><span id="p-hazard-text">⚠ 危険生物警報 ⚠</span></div>
 
-        <div class="photo-wrap">
-          <div class="photo-frame" id="p-photo">
-            <span class="ph-empty" id="p-photo-empty" data-i18n="defaultPhotoEmpty">画像未設定</span>
+        <div class="card-body">
+          <div class="card-media">
+            <div class="photo-wrap">
+              <div class="photo-frame" id="p-photo">
+                <span class="ph-empty" id="p-photo-empty" data-i18n="defaultPhotoEmpty">画像未設定</span>
+              </div>
+              <div class="sticker-row" id="p-stickers"></div>
+            </div>
           </div>
-          <div class="sticker-row" id="p-stickers"></div>
-        </div>
 
-        <div class="name-banner">
-          <div class="name-text" id="p-name">アバター名</div>
-          <div class="subtitle" id="p-origin"></div>
-        </div>
+          <div class="quote-bubble" id="p-quote" style="display:none"></div>
 
-        <div class="quote-bubble" id="p-quote" style="display:none"></div>
-
-        <div class="stat-grid" id="p-statgrid">
-          <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
-          <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
-          <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
-        </div>
-
-        <div class="danger-block">
-          <div class="danger-head">
-            <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
-            <span class="mega-badge" id="p-mega-badge">MEGA</span>
+          <div class="name-banner">
+            <div class="name-text" id="p-name">アバター名</div>
+            <div class="subtitle" id="p-origin"></div>
           </div>
-          <div class="stars-row" id="p-stars">-</div>
-          <div class="damage-table">
-            <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
-            <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
-          </div>
-          <div class="extra-chip-row" id="p-extra"></div>
-        </div>
 
-        <div class="desc-block">
-          <div class="desc-eyebrow" data-i18n="eyebrowProfile">PROFILE</div>
-          <div class="desc-text" id="p-desc">ここに紹介文が表示されます。</div>
+          <div class="stat-grid" id="p-statgrid">
+            <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
+            <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
+            <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
+          </div>
+
+          <div class="danger-block">
+            <div class="danger-head">
+              <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
+              <span class="mega-badge" id="p-mega-badge">MEGA</span>
+            </div>
+            <div class="stars-row" id="p-stars">-</div>
+            <div class="damage-table">
+              <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
+            </div>
+            <div class="extra-chip-row" id="p-extra"></div>
+          </div>
+
+          <div class="desc-block">
+            <div class="desc-eyebrow" data-i18n="eyebrowProfile">PROFILE</div>
+            <div class="desc-text" id="p-desc">ここに紹介文が表示されます。</div>
+          </div>
         </div>
 
         <div class="footer-mark" data-i18n="footerMark">AVATAR INTRODUCTION CARD</div>
@@ -766,7 +882,8 @@
 
   /* ================= i18n ================= */
   const TR = {
-    appTitle:{ja:'🌈 アバター紹介カードメーカー',en:'🌈 Avatar Profile Card Maker',ko:'🌈 아바타 소개 카드 메이커',zh:'🌈 Avatar 角色卡制作器'},
+    appTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
+    pageTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
     appSubtitle:{ja:'VRChatアバターのプロフィールカードを作って、PNGで書き出そう',en:'Create a profile card for your VRChat avatar and export it as PNG',ko:'VRChat 아바타 프로필 카드를 만들고 PNG로 내보내세요',zh:'制作你的 VRChat 角色资料卡,并导出为 PNG'},
     modeNormal:{ja:'🐣 通常サイズ',en:'🐣 Normal Size',ko:'🐣 일반 사이즈',zh:'🐣 普通尺寸'},
     modeGiant:{ja:'🏙️ 巨大サイズ',en:'🏙️ Giant Size',ko:'🏙️ 거대 사이즈',zh:'🏙️ 巨大尺寸'},
@@ -785,6 +902,7 @@
     legendBasic:{ja:'📝 基本情報',en:'📝 Basic Info',ko:'📝 기본 정보',zh:'📝 基本信息'},
     labelName:{ja:'アバター名',en:'Avatar Name',ko:'아바타 이름',zh:'角色名称'},
     labelDesc:{ja:'説明欄',en:'Description',ko:'설명',zh:'简介'},
+    hintRuby:{ja:'ルビを付けたい場合は [漢字|よみ] のように書いてください(例: [吸血鬼|きゅうけつき])',en:'To add a reading, write it as [kanji|reading] (e.g. [吸血鬼|きゅうけつき])',ko:'후리가나를 달고 싶다면 [한자|읽기] 형식으로 작성해 주세요(예: [吸血鬼|きゅうけつき])',zh:'如需添加注音,请使用 [汉字|读音] 的格式书写(例: [吸血鬼|きゅうけつき])'},
     labelSubtitle:{ja:'肩書き・サブタイトル(任意)',en:'Title / Subtitle (optional)',ko:'직함・부제(선택)',zh:'头衔・副标题(可选)'},
     labelHeight:{ja:'身長(任意・自由入力)',en:'Height (optional, free text)',ko:'키(선택, 자유 입력)',zh:'身高(可选,自由输入)'},
     labelWeight:{ja:'体重(任意・自由入力)',en:'Weight (optional, free text)',ko:'체중(선택, 자유 입력)',zh:'体重(可选,自由输入)'},
@@ -848,7 +966,18 @@
     zeroCost:{ja:'0円',en:'0 USD',ko:'0원',zh:'0元'},
     irreparable:{ja:'修復不能',en:'Beyond Repair',ko:'복구 불가능',zh:'无法修复'},
   };
-  let currentLang = 'ja';
+  const LANG_STORAGE_KEY = 'avatarCardMaker.lang';
+  const SUPPORTED_LANGS = ['ja','en','ko','zh'];
+  function getStoredLang(){
+    try{ return localStorage.getItem(LANG_STORAGE_KEY); }
+    catch(e){ return null; }
+  }
+  function storeLang(v){
+    try{ localStorage.setItem(LANG_STORAGE_KEY, v); }
+    catch(e){ /* ストレージが使えない環境ではメモリ上の状態のみで動作 */ }
+  }
+  const storedLang = getStoredLang();
+  let currentLang = SUPPORTED_LANGS.includes(storedLang) ? storedLang : 'ja';
   function t(key){
     const e = TR[key];
     if(!e) return key;
@@ -856,6 +985,7 @@
   }
   function applyI18n(){
     document.documentElement.lang = currentLang;
+    document.title = t('pageTitle');
     document.querySelectorAll('[data-i18n]').forEach(el=>{
       el.textContent = t(el.dataset.i18n);
     });
@@ -863,8 +993,10 @@
       el.placeholder = t(el.dataset.i18nPh);
     });
   }
+  document.getElementById('langSelect').value = currentLang;
   document.getElementById('langSelect').addEventListener('change', (e)=>{
     currentLang = e.target.value;
+    storeLang(currentLang);
     applyI18n();
     updatePhotoHint();
     renderAll();
@@ -879,6 +1011,29 @@
   };
 
   const $ = (id)=>document.getElementById(id);
+
+  /* ================= theme (light / dark, persisted) ================= */
+  const THEME_STORAGE_KEY = 'avatarCardMaker.theme';
+  function getStoredTheme(){
+    try{ return localStorage.getItem(THEME_STORAGE_KEY); }
+    catch(e){ return null; }
+  }
+  function storeTheme(v){
+    try{ localStorage.setItem(THEME_STORAGE_KEY, v); }
+    catch(e){ /* ストレージが使えない環境ではメモリ上の状態のみで動作 */ }
+  }
+  let currentTheme = getStoredTheme() === 'dark' ? 'dark' : 'light';
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    $('themeSwitchThumb').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    $('themeSwitch').setAttribute('aria-pressed', String(currentTheme === 'dark'));
+  }
+  $('themeSwitch').addEventListener('click', ()=>{
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme();
+    storeTheme(currentTheme);
+  });
 
   /* ---------------- number / localized unit formatting ---------------- */
   const UNIT_WORDS = {
@@ -909,6 +1064,36 @@
   };
   const JA_IRREPARABLE_THRESHOLD = 1e24; // 垓(10^20)より上の単位が必要になる金額
   function comma(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  /* ---------------- ruby (furigana) support in description ----------------
+     「[漢字|よみ]」のように専用記法で書かれた部分を
+     疑似ルビ(漢字の上に小さく読みを重ねる)として表示する。
+     html2canvas互換のため、ネイティブの<ruby>タグは使わずCSSで再現する。
+  ---------------------------------------------------------------------------*/
+  function escapeHtml(str){
+    return str
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+  function renderDescWithRuby(rawText){
+    const re = /\[([^\[\]|]+)\|([^\[\]|]+)\]/g;
+    let result = '';
+    let lastIndex = 0;
+    let m;
+    while((m = re.exec(rawText)) !== null){
+      result += escapeHtml(rawText.slice(lastIndex, m.index));
+      const base = escapeHtml(m[1]);
+      const reading = escapeHtml(m[2]);
+      result += `<span class="pseudo-ruby"><span class="pr-rt">${reading}</span><span class="pr-base">${base}</span></span>`;
+      lastIndex = re.lastIndex;
+    }
+    result += escapeHtml(rawText.slice(lastIndex));
+    return result;
+  }
+
   function formatBigNumber(n){
     if(!isFinite(n)) return '∞';
     const scale = SCALE_WORDS[currentLang] || SCALE_WORDS.ja;
@@ -1126,6 +1311,7 @@
       img.onload = ()=>{
         cropImg = img;
         if(aspect==='square'){ frameW=300; frameH=300; $('cropTitle').textContent=t('cropTitleExpr'); }
+        else if(aspect==='landscape'){ frameW=384; frameH=216; $('cropTitle').textContent=t('cropTitleMain'); }
         else { frameW=300; frameH=375; $('cropTitle').textContent=t('cropTitleMain'); }
         cropCanvas.width=frameW; cropCanvas.height=frameH;
         cropBaseScale = Math.max(frameW/img.width, frameH/img.height);
@@ -1193,7 +1379,7 @@
     const zoneEl = $('dz-avatar');
     function acceptFile(file){
       if(!file || !file.type.startsWith('image/')) return;
-      openCropEditor(file, 'portrait', (dataUrl)=>{
+      openCropEditor(file, state.orientation === 'landscape' ? 'landscape' : 'portrait', (dataUrl)=>{
         state.avatar = dataUrl;
         zoneEl.innerHTML = `<img class="dz-thumb" src="${dataUrl}"><span>${t('dzMainChangeText')}</span>`;
         renderAll();
@@ -1272,15 +1458,24 @@
     $('p-name').textContent = $('f-name').value.trim() || t('defaultName');
     const origin = $('f-origin').value.trim();
     const subtitle = $('f-subtitle').value.trim();
-    let subtitleText = '';
-    if(subtitle && origin) subtitleText = `${subtitle} / ${origin}`;
-    else if(subtitle) subtitleText = subtitle;
-    else if(origin) subtitleText = origin;
-    $('p-origin').textContent = subtitleText;
+    const originEl = $('p-origin');
+    originEl.innerHTML = '';
+    if(subtitle){
+      const line1 = document.createElement('div');
+      line1.className = 'subtitle-line';
+      line1.textContent = subtitle;
+      originEl.appendChild(line1);
+    }
+    if(origin){
+      const line2 = document.createElement('div');
+      line2.className = 'subtitle-line origin-line';
+      line2.textContent = `📍 ${origin}`;
+      originEl.appendChild(line2);
+    }
 
     const quote = $('f-quote').value.trim();
     const quoteEl = $('p-quote');
-    if(quote){ quoteEl.style.display='block'; quoteEl.textContent = `「${quote}」`; }
+    if(quote){ quoteEl.style.display='block'; quoteEl.textContent = quote; }
     else { quoteEl.style.display='none'; }
 
     const h = $('f-height').value.trim();
@@ -1293,7 +1488,7 @@
     if(b||hh||ww){ sizesWrap.style.display='block'; $('p-sizes').textContent = `B${b||'-'} / H${hh||'-'} / W${ww||'-'}`; }
     else { sizesWrap.style.display='none'; }
 
-    $('p-desc').textContent = $('f-desc').value.trim() || t('defaultDesc');
+    $('p-desc').innerHTML = renderDescWithRuby($('f-desc').value.trim() || t('defaultDesc'));
 
     const card = $('theCard');
     if(state.mode==='giant'){
@@ -1375,6 +1570,7 @@
 
   /* ---------------- init ---------------- */
   applyI18n();
+  applyTheme();
   updatePhotoHint();
   runAutoCalc();
   renderAll();
