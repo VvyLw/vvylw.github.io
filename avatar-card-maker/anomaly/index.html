@@ -17,6 +17,9 @@
     --yellow:#ffc93c;
     --lavender:#f3f0ff;
     --card-bg:#fffdfb;
+    --hazard-red:#e8291c;
+    --hazard-yellow:#ffd400;
+    --hazard-dark:#14141c;
     /* アプリ全体の「クローム」(カード自体は含まない)用のテーマ変数 */
     --chrome-panel-bg:#ffffff;
     --chrome-input-bg:#fbfbfe;
@@ -171,7 +174,65 @@
     white-space:nowrap;
   }
   .seg-toggle button.active{ background:var(--ink); color:#fff; }
+  .seg-toggle button[data-mode="giant"].active{ background:var(--hazard-red); }
   .seg-toggle.orient{ flex:0 0 150px; margin-left:auto; }
+
+  /* --- mode switch (⚠ toggle) --- */
+  .mode-switch{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+    user-select:none;
+    background:var(--lavender);
+    border-radius:999px;
+    padding:4px;
+  }
+  .form-panel.giant-theme .mode-switch{ background:#2a0d0d; }
+  .mode-switch-track{
+    width:52px; height:30px;
+    border-radius:999px;
+    background:#fff;
+    position:relative;
+    flex:0 0 auto;
+    transition:background .25s;
+    box-shadow:inset 0 0 0 1.5px #e3e0f5;
+  }
+  .mode-switch.giant .mode-switch-track{ background:#3a1010; box-shadow:inset 0 0 0 1.5px #6a2020; }
+  .mode-switch-thumb{
+    position:absolute;
+    top:3px; left:3px;
+    width:24px; height:24px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    transition:left .25s, background .25s;
+  }
+  .mode-switch.giant .mode-switch-thumb{ left:25px; background:var(--hazard-red); box-shadow:0 0 8px 2px rgba(232,41,28,.6); }
+
+  /* --- giant-theme: dark form panel when 巨大サイズ is active --- */
+  .form-panel.giant-theme{ background:#14141c; }
+  .form-panel.giant-theme .field label{ color:#b9b6cf; }
+  .form-panel.giant-theme .hint{ color:#8f8fa8; }
+  .form-panel.giant-theme .field input[type="text"],
+  .form-panel.giant-theme .field input[type="number"],
+  .form-panel.giant-theme .field textarea,
+  .form-panel.giant-theme .field select{
+    background:#1f1f2b;
+    border-color:#3a3a4a;
+    color:#f0f0f5;
+  }
+  .form-panel.giant-theme .field input:focus,
+  .form-panel.giant-theme .field textarea:focus,
+  .form-panel.giant-theme .field select:focus{ background:#26263a; }
+  .form-panel.giant-theme .dropzone{ background:#1f1f2b; border-color:#3a3a4a; color:#8f8fa8; }
+  .form-panel.giant-theme .dropzone.dragover{ background:#2a1010; border-color:var(--pink); }
+  .form-panel.giant-theme .seg-toggle.orient{ background:#1f1f2b; }
+  .form-panel.giant-theme .seg-toggle.orient button{ color:#8f8fa8; }
+  .form-panel.giant-theme .seg-toggle.orient button.active{ background:var(--hazard-red); color:#fff; }
+  .form-panel.giant-theme .recalc-btn{ background:#1f1f2b; }
 
   /* --- form --- */
   fieldset{ border:none; padding:0; margin:0 0 20px; }
@@ -185,6 +246,7 @@
     align-items:center;
     gap:6px;
   }
+  .giant-legend legend{ color:var(--hazard-red); }
   .field{ margin-bottom:12px; }
   .field label{
     display:block;
@@ -263,8 +325,8 @@
     display:inline-flex;
     align-items:center;
     gap:6px;
-    border:1.5px solid var(--pink);
-    color:var(--pink);
+    border:1.5px solid var(--hazard-red);
+    color:var(--hazard-red);
     background:var(--chrome-btn-bg);
     font-weight:700;
     font-size:12.5px;
@@ -288,6 +350,7 @@
     cursor:pointer;
     box-shadow:0 8px 20px rgba(255,61,128,.35);
   }
+  .complete-btn.giant{ background:linear-gradient(135deg,var(--hazard-red),#ff6a3d); box-shadow:0 8px 20px rgba(232,41,28,.4); }
   .complete-btn:active{ transform:translateY(1px); }
   .status-msg{ text-align:center; font-size:12px; color:var(--chrome-label); min-height:16px; margin-top:6px; }
 
@@ -325,6 +388,51 @@
   .card.landscape .stat-grid{ grid-area:statarea; margin-bottom:0; align-self:center; }
   .card.landscape .quote-bubble{ grid-area:quote; }
   .card.landscape .desc-block{ grid-area:desc; }
+  /* 巨大モードは写真をフル幅のまま大きく見せ、危険度情報は説明文と横並びにする */
+  .card.landscape.giant .card-body{
+    grid-template-areas:
+      "namearea statarea"
+      "photo    photo"
+      "quote    quote"
+      "danger   desc";
+  }
+  .card.landscape.giant .danger-block{ grid-area:danger; margin:0; align-self:start; }
+  .card.landscape.giant .desc-block{ align-self:start; }
+  .card.giant{ background:var(--hazard-dark); color:#f4f4f8; }
+  .card[data-tier="final"]{ background:#050505; }
+  /* ★50以上(終焉宣言): TERAバッジ/リボンと警報バーの配色を反転させる */
+  .card[data-tier="final"] .mega-badge,
+  .card[data-tier="final"] .ribbon{
+    background:#ffffff;
+    color:#141414;
+  }
+  .card[data-tier="final"] .hazard-bar{
+    background:repeating-linear-gradient(45deg,#000000 0 16px, #ffffff 16px 32px);
+  }
+  .card[data-tier="final"] .hazard-bar span{
+    background:#ffffff;
+    color:#000000;
+  }
+
+  .hazard-bar{
+    display:none;
+    height:26px;
+    margin:-20px -20px 14px;
+    background:repeating-linear-gradient(45deg,var(--tier-accent-visible, var(--hazard-yellow)) 0 16px, var(--hazard-dark) 16px 32px);
+    align-items:center;
+    justify-content:center;
+  }
+  .card.giant .hazard-bar{ display:flex; }
+  .hazard-bar span{
+    background:var(--hazard-dark);
+    color:var(--tier-accent-visible, var(--hazard-yellow));
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:800;
+    font-size:11px;
+    padding:2px 10px;
+    border-radius:4px;
+    letter-spacing:.05em;
+  }
 
   .photo-wrap{ position:relative; margin-bottom:14px; }
   .photo-frame{
@@ -342,6 +450,7 @@
     transition:aspect-ratio .25s;
   }
   .card.landscape .photo-frame{ aspect-ratio:16/9; }
+  .card.giant .photo-frame{ border:5px solid var(--tier-accent, var(--hazard-red)); border-radius:10px; transform:none; }
   .photo-frame img{ width:100%; height:100%; object-fit:cover; }
   .photo-frame .ph-empty{ color:#b9b6d6; font-size:13px; font-family:'M PLUS Rounded 1c'; }
 
@@ -351,6 +460,7 @@
   .sticker:nth-child(2){ transform:rotate(5deg); }
   .sticker:nth-child(3){ transform:rotate(-4deg); }
   .sticker img{ width:100%; height:100%; object-fit:cover; }
+  .card.giant .sticker{ border-color:var(--tier-accent, var(--hazard-yellow)); }
 
   .name-banner{ margin:14px 0 10px; text-align:center; }
   .name-text{
@@ -362,7 +472,9 @@
     border-radius:999px;
     background:linear-gradient(120deg,#fff0f6,#eafff6);
   }
+  .card.giant .name-text{ background:linear-gradient(120deg, var(--tier-dark-bg, #2a0d0d), #1c1c26); color:#fff; }
   .subtitle{ font-size:11.5px; color:var(--muted); margin-top:4px; letter-spacing:.04em; min-height:14px; display:flex; flex-direction:column; gap:2px; }
+  .card.giant .subtitle{ color:#ff9a86; }
   .subtitle-line.origin-line{ opacity:.85; }
 
   .quote-bubble{
@@ -382,6 +494,8 @@
     border-width:0 6px 8px 6px; border-style:solid;
     border-color:transparent transparent var(--mint) transparent;
   }
+  .card.giant .quote-bubble{ background:var(--tier-accent, var(--hazard-red)); }
+  .card.giant .quote-bubble::after{ border-color:transparent transparent var(--tier-accent, var(--hazard-red)) transparent; }
 
   .stat-grid{
     display:grid;
@@ -393,19 +507,135 @@
     padding:12px;
     margin-bottom:14px;
   }
+  .card.giant .stat-grid{ background:#1c1c26; border-color:#3a3a48; }
   .stat-chip{ font-size:12px; }
   .stat-chip .k{ color:var(--muted); font-size:10.5px; font-weight:700; }
+  .card.giant .stat-chip .k{ color:#9d9dae; }
   .stat-chip .v{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:14px; }
   .stat-chip.full{ grid-column:1 / -1; }
 
   .desc-block{ margin-bottom:6px; }
   .desc-eyebrow{ font-family:'M PLUS Rounded 1c'; font-size:10.5px; font-weight:800; color:var(--pink); letter-spacing:.1em; margin-bottom:4px; }
+  .card.giant .desc-eyebrow{ color:var(--tier-accent-visible, var(--hazard-yellow)); }
   .desc-text{ font-size:13px; line-height:1.9; white-space:pre-wrap; word-break:break-word; }
   .pseudo-ruby{ display:inline-block; text-align:center; vertical-align:bottom; line-height:1.1; }
   .pseudo-ruby .pr-rt{ display:block; font-size:.55em; line-height:1; opacity:.75; transform:translateY(1px); white-space:nowrap; }
   .pseudo-ruby .pr-base{ display:block; line-height:1.3; }
 
+  .danger-block{
+    display:none;
+    margin:16px 0 14px;
+    background:linear-gradient(135deg, var(--tier-dark-bg, #2a0d0d), #14141c);
+    border:1.5px solid var(--tier-accent, var(--hazard-red));
+    border-radius:14px;
+    padding:12px 14px;
+  }
+  .card.giant .danger-block{ display:block; }
+  .danger-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .danger-head .lbl{ font-family:'M PLUS Rounded 1c'; font-size:11px; font-weight:800; color:var(--tier-accent-visible, var(--hazard-yellow)); letter-spacing:.06em; }
+  .mega-badge{ display:none; background:var(--tier-accent, var(--hazard-yellow)); color:var(--tier-accent-text, var(--hazard-dark)); font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:999px; }
+  .card.mega .mega-badge{ display:inline-block; }
+  .stars-row{ font-size:16px; letter-spacing:1px; color:var(--tier-accent-visible, var(--hazard-yellow)); line-height:1; }
+  .stars-row .n{ font-size:11px; color:#ffb199; margin-left:4px; font-family:'JetBrains Mono'; }
+
+  .damage-table{ margin-top:10px; display:flex; flex-direction:column; gap:5px; }
+  .damage-row{ display:flex; justify-content:space-between; gap:10px; font-size:11.5px; border-bottom:1px dashed #3a2020; padding-bottom:4px; }
+  .damage-row .k{ color:#ffb199; flex:0 0 auto; }
+  .damage-row .v{ font-family:'JetBrains Mono'; font-weight:700; text-align:right; }
+  .extra-chip-row{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .extra-chip{ font-size:10.5px; background:#2a0d0d; border:1px solid #4a2424; color:#ffcfc2; padding:3px 8px; border-radius:999px; }
+
   .footer-mark{ text-align:center; font-size:9.5px; color:#c7c3e0; margin-top:12px; letter-spacing:.12em; }
+  .card.giant .footer-mark{ color:#5a5a68; }
+
+  /* mega shimmer */
+  .card.mega{ box-shadow:0 20px 55px var(--tier-accent, rgba(232,41,28,.5)); }
+  .card.mega::before{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);
+    background-size:250% 250%;
+    animation:shimmer 2.6s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes shimmer{ 0%{ background-position:180% 0; } 100%{ background-position:-80% 0; } }
+  .ribbon{
+    display:none;
+    position:absolute; top:14px; right:-42px;
+    background:var(--tier-accent, var(--hazard-yellow));
+    color:var(--tier-accent-text, var(--hazard-dark));
+    font-family:'M PLUS Rounded 1c';
+    font-weight:800;
+    font-size:10px;
+    padding:4px 46px;
+    transform:rotate(38deg);
+    letter-spacing:.05em;
+    box-shadow:0 3px 8px rgba(0,0,0,.3);
+  }
+  .card.mega .ribbon{ display:block; }
+
+  /* ---- GIGA: red/orange flame effect on badge & ribbon ---- */
+  @keyframes fireFlickerGiga{
+    0%{ background-position:0% 50%; }
+    30%{ background-position:70% 50%; }
+    55%{ background-position:40% 50%; }
+    80%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+  }
+  @keyframes fireGlowGiga{
+    0%,100%{ text-shadow:0 0 3px #ff5500, 0 0 8px #ff2200, 0 0 16px #ff6a00; }
+    50%{ text-shadow:0 0 5px #ffcc00, 0 0 12px #ff3d00, 0 0 24px #ff2200; }
+  }
+  .card[data-tier="giga"] .mega-badge,
+  .card[data-tier="giga"] .ribbon{
+    background:linear-gradient(100deg,#3d0800,#ff3d00,#ffb300,#fff2b0,#ff2200,#7a1a00,#ff3d00,#ffde59);
+    background-size:400% 100%;
+    animation:fireFlickerGiga .8s ease-in-out infinite, fireGlowGiga .6s ease-in-out infinite;
+    color:#fff6df;
+  }
+  .card[data-tier="giga"] .ribbon{
+    animation:fireFlickerGiga .8s ease-in-out infinite, fireGlowGiga .6s ease-in-out infinite, flameJitter .4s ease-in-out infinite;
+    box-shadow:0 0 14px 4px rgba(255,80,0,.75), 0 0 26px 8px rgba(255,140,0,.35), 0 3px 8px rgba(0,0,0,.3);
+  }
+
+  /* ---- TERA: purple flame effect on badge & ribbon ---- */
+  @keyframes fireFlickerTera{
+    0%{ background-position:0% 50%; }
+    30%{ background-position:70% 50%; }
+    55%{ background-position:40% 50%; }
+    80%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+  }
+  @keyframes fireGlowTera{
+    0%,100%{ text-shadow:0 0 3px #c400ff, 0 0 8px #7a00cc, 0 0 16px #b000ff; }
+    50%{ text-shadow:0 0 5px #ffb3ff, 0 0 12px #d400ff, 0 0 24px #7a00cc; }
+  }
+  .card[data-tier="tera"] .mega-badge,
+  .card[data-tier="tera"] .ribbon{
+    background:linear-gradient(100deg,#1a0033,#8e2de2,#c86dff,#fce4ff,#d400ff,#3d0066,#8e2de2,#ff8ef7);
+    background-size:400% 100%;
+    animation:fireFlickerTera .8s ease-in-out infinite, fireGlowTera .6s ease-in-out infinite;
+    color:#fff2ff;
+  }
+  .card[data-tier="tera"] .ribbon{
+    animation:fireFlickerTera .8s ease-in-out infinite, fireGlowTera .6s ease-in-out infinite, flameJitter .4s ease-in-out infinite;
+    box-shadow:0 0 14px 4px rgba(180,0,255,.75), 0 0 26px 8px rgba(216,110,255,.35), 0 3px 8px rgba(0,0,0,.3);
+  }
+
+  @keyframes flameJitter{
+    0%,100%{ transform:rotate(38deg) scale(1); }
+    25%{ transform:rotate(36deg) scale(1.03); }
+    50%{ transform:rotate(40deg) scale(0.97); }
+    75%{ transform:rotate(37deg) scale(1.015); }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .card[data-tier="giga"] .mega-badge, .card[data-tier="giga"] .ribbon,
+    .card[data-tier="tera"] .mega-badge, .card[data-tier="tera"] .ribbon{ animation:none; background-position:0% 50%; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card.mega::before{ animation:none; }
+  }
 
   @media (max-width:960px){
     .app{ flex-direction:column; align-items:center; }
@@ -464,7 +694,12 @@
   <!-- ================= FORM ================= -->
   <div class="form-panel" id="formPanel">
     <div class="toggle-row">
-      <div class="seg-toggle orient" id="orientToggle" style="margin-left:0;">
+      <div class="mode-switch" id="modeSwitch" role="button" tabindex="0" aria-pressed="false">
+        <div class="mode-switch-track">
+          <div class="mode-switch-thumb" id="modeSwitchThumb"><span id="modeSwitchIcon">🐣</span></div>
+        </div>
+      </div>
+      <div class="seg-toggle orient" id="orientToggle">
         <button type="button" class="active" data-orient="portrait" data-i18n="orientPortrait">縦</button>
         <button type="button" data-orient="landscape" data-i18n="orientLandscape">横</button>
       </div>
@@ -536,6 +771,31 @@
           <input type="text" id="f-origin">
         </div>
       </fieldset>
+
+      <fieldset class="giant-only giant-legend" style="display:none">
+        <legend data-i18n="legendGiant">⚠️ 巨大サイズ設定</legend>
+        <div class="field">
+          <label for="f-stars" data-i18n="labelStars">危険度(★の数)</label>
+          <input type="number" id="f-stars" min="0" value="5">
+        </div>
+        <button type="button" class="recalc-btn" id="recalcBtn"><span data-i18n="btnRecalc">🎲 被害想定を自動概算する</span></button>
+
+        <div class="field"><label for="f-deaths" data-i18n="labelDeaths">死亡者数(自動概算・編集可)</label><input type="text" id="f-deaths"></div>
+        <div class="field"><label for="f-injured" data-i18n="labelInjured">負傷者数(自動概算・編集可)</label><input type="text" id="f-injured"></div>
+        <div class="field"><label for="f-cities" data-i18n="labelCities">壊滅させた都市数(自動概算・編集可)</label><input type="text" id="f-cities"></div>
+        <div class="field"><label for="f-buildings" data-i18n="labelBuildings">倒壊した建物数(自動概算・編集可)</label><input type="text" id="f-buildings"></div>
+        <div class="field"><label for="f-area" data-i18n="labelArea">被害面積(自動概算・編集可)</label><input type="text" id="f-area"></div>
+        <div class="field"><label for="f-cost" data-i18n="labelCost">被害総額(自動概算・編集可)</label><input type="text" id="f-cost"></div>
+
+        <div class="field">
+          <label for="f-attack" data-i18n="labelAttack">攻撃パターン(任意)</label>
+          <input type="text" id="f-attack" placeholder="例: 踏み潰し / 建物投げ" data-i18n-ph="phAttack">
+        </div>
+        <div class="field">
+          <label for="f-durability" data-i18n="labelDurability">耐久性(任意)</label>
+          <input type="text" id="f-durability" placeholder="例: 核ミサイル効果なし" data-i18n-ph="phDurability">
+        </div>
+      </fieldset>
     </form>
   </div>
 
@@ -543,6 +803,8 @@
   <div class="preview-panel">
     <div class="card-scale-wrap">
       <div class="card normal" id="theCard">
+        <div class="ribbon" id="p-ribbon">MEGA</div>
+        <div class="hazard-bar"><span id="p-hazard-text">⚠ 危険生物警報 ⚠</span></div>
 
         <div class="card-body">
           <div class="card-media">
@@ -565,6 +827,23 @@
             <div class="stat-chip"><div class="k" data-i18n="kHeight">身長</div><div class="v" id="p-height">-</div></div>
             <div class="stat-chip"><div class="k" data-i18n="kWeight">体重</div><div class="v" id="p-weight">-</div></div>
             <div class="stat-chip full" id="p-sizes-wrap" style="display:none"><div class="k" data-i18n="kSizes">スリーサイズ</div><div class="v" id="p-sizes">-</div></div>
+          </div>
+
+          <div class="danger-block">
+            <div class="danger-head">
+              <span class="lbl" data-i18n="dangerLevelLabel">DANGER LEVEL</span>
+              <span class="mega-badge" id="p-mega-badge">MEGA</span>
+            </div>
+            <div class="stars-row" id="p-stars">-</div>
+            <div class="damage-table">
+              <div class="damage-row"><span class="k" data-i18n="kDeaths">死亡者数</span><span class="v" id="p-deaths">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kInjured">負傷者数</span><span class="v" id="p-injured">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCities">壊滅都市数</span><span class="v" id="p-cities">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kBuildings">倒壊建物数</span><span class="v" id="p-buildings">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kArea">被害面積</span><span class="v" id="p-area">-</span></div>
+              <div class="damage-row"><span class="k" data-i18n="kCost">被害総額</span><span class="v" id="p-cost">-</span></div>
+            </div>
+            <div class="extra-chip-row" id="p-extra"></div>
           </div>
 
           <div class="desc-block">
@@ -606,6 +885,8 @@
     appTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
     pageTitle:{ja:'アバター紹介カードメーカー',en:'Avatar Profile Card Maker',ko:'아바타 소개 카드 메이커',zh:'Avatar 角色卡制作器'},
     appSubtitle:{ja:'VRChatアバターのプロフィールカードを作って、PNGで書き出そう',en:'Create a profile card for your VRChat avatar and export it as PNG',ko:'VRChat 아바타 프로필 카드를 만들고 PNG로 내보내세요',zh:'制作你的 VRChat 角色资料卡,并导出为 PNG'},
+    modeNormal:{ja:'🐣 通常サイズ',en:'🐣 Normal Size',ko:'🐣 일반 사이즈',zh:'🐣 普通尺寸'},
+    modeGiant:{ja:'🏙️ 巨大サイズ',en:'🏙️ Giant Size',ko:'🏙️ 거대 사이즈',zh:'🏙️ 巨大尺寸'},
     orientPortrait:{ja:'縦',en:'Portrait',ko:'세로',zh:'纵向'},
     orientLandscape:{ja:'横',en:'Landscape',ko:'가로',zh:'横向'},
     legendPhoto:{ja:'📸 メイン画像',en:'📸 Main Image',ko:'📸 메인 이미지',zh:'📸 主图片'},
@@ -630,25 +911,60 @@
     labelSizes:{ja:'スリーサイズ(任意・cm)',en:'Body Measurements (optional, cm)',ko:'쓰리사이즈(선택, cm)',zh:'三围(可选,厘米)'},
     labelQuote:{ja:'セリフ(任意)',en:'Quote (optional)',ko:'대사(선택)',zh:'台词(可选)'},
     labelOrigin:{ja:'出身(任意)',en:'Origin (optional)',ko:'출신(선택)',zh:'出身(可选)'},
+    legendGiant:{ja:'⚠️ 巨大サイズ設定',en:'⚠️ Giant Size Settings',ko:'⚠️ 거대 사이즈 설정',zh:'⚠️ 巨大尺寸设置'},
+    labelStars:{ja:'危険度(★の数)',en:'Danger Level (number of ★)',ko:'위험도(★ 개수)',zh:'危险度(★数量)'},
+    btnRecalc:{ja:'🎲 被害想定を自動概算する',en:'🎲 Auto-estimate damage',ko:'🎲 피해 규모 자동 추정',zh:'🎲 自动估算灾害规模'},
+    labelDeaths:{ja:'死亡者数(自動概算・編集可)',en:'Deaths (auto-estimated, editable)',ko:'사망자 수(자동 추정, 편집 가능)',zh:'死亡人数(自动估算,可编辑)'},
+    labelInjured:{ja:'負傷者数(自動概算・編集可)',en:'Injured (auto-estimated, editable)',ko:'부상자 수(자동 추정, 편집 가능)',zh:'受伤人数(自动估算,可编辑)'},
+    labelCities:{ja:'壊滅させた都市数(自動概算・編集可)',en:'Cities Destroyed (auto-estimated, editable)',ko:'파괴된 도시 수(자동 추정, 편집 가능)',zh:'摧毁城市数(自动估算,可编辑)'},
+    labelBuildings:{ja:'倒壊した建物数(自動概算・編集可)',en:'Buildings Collapsed (auto-estimated, editable)',ko:'붕괴된 건물 수(자동 추정, 편집 가능)',zh:'倒塌建筑数(自动估算,可编辑)'},
+    labelArea:{ja:'被害面積(自動概算・編集可)',en:'Damage Area (auto-estimated, editable)',ko:'피해 면적(자동 추정, 편집 가능)',zh:'受灾面积(自动估算,可编辑)'},
+    labelCost:{ja:'被害総額(自動概算・編集可)',en:'Total Damage Cost (auto-estimated, editable)',ko:'총 피해액(자동 추정, 편집 가능)',zh:'损失总额(自动估算,可编辑)'},
+    labelAttack:{ja:'攻撃パターン(任意)',en:'Attack Pattern (optional)',ko:'공격 패턴(선택)',zh:'攻击方式(可选)'},
+    phAttack:{ja:'例: 踏み潰し / 建物投げ',en:'e.g. Stomping / Throwing buildings',ko:'예: 짓밟기 / 건물 던지기',zh:'例:踩踏 / 投掷建筑物'},
+    labelDurability:{ja:'耐久性(任意)',en:'Durability (optional)',ko:'내구성(선택)',zh:'耐久度(可选)'},
+    phDurability:{ja:'例: 核ミサイル効果なし',en:'e.g. Unfazed by nuclear missiles',ko:'예: 핵미사일에도 끄떡없음',zh:'例:核导弹对其无效'},
     btnComplete:{ja:'✅ 完成(PNGを保存)',en:'✅ Finish (Save as PNG)',ko:'✅ 완성(PNG로 저장)',zh:'✅ 完成(保存为 PNG)'},
     cropTitleMain:{ja:'メイン画像を調整(ズーム・ドラッグで位置調整)',en:'Adjust main image (zoom & drag to position)',ko:'메인 이미지 조정(확대/드래그로 위치 조정)',zh:'调整主图片(缩放・拖动以调整位置)'},
     cropTitleExpr:{ja:'表情画像を調整(ズーム・ドラッグで位置調整)',en:'Adjust expression image (zoom & drag to position)',ko:'표정 이미지 조정(확대/드래그로 위치 조정)',zh:'调整表情图片(缩放・拖动以调整位置)'},
     cropZoomLabel:{ja:'ズーム',en:'Zoom',ko:'확대/축소',zh:'缩放'},
     cropCancel:{ja:'キャンセル',en:'Cancel',ko:'취소',zh:'取消'},
     cropConfirm:{ja:'この範囲で決定',en:'Confirm Crop',ko:'이 범위로 확정',zh:'确认裁剪范围'},
+    hazardPeace:{ja:'🕊 平和的 🕊',en:'🕊 PEACEFUL 🕊',ko:'🕊 평화적 🕊',zh:'🕊 和平 🕊'},
+    hazardCaution:{ja:'⚠ 危険生物注意報 ⚠',en:'⚠ CREATURE CAUTION ⚠',ko:'⚠ 위험 생물 주의보 ⚠',zh:'⚠ 危险生物注意 ⚠'},
+    hazardAlert:{ja:'⚠ 危険生物警報 ⚠',en:'⚠ DANGEROUS CREATURE ALERT ⚠',ko:'⚠ 위험 생물 경보 ⚠',zh:'⚠ 危险生物警报 ⚠'},
+    hazardMega:{ja:'⚠ 危険生物特別警報 ⚠',en:'⚠ SPECIAL CREATURE ALERT ⚠',ko:'⚠ 위험 생물 특별경보 ⚠',zh:'⚠ 危险生物特别警报 ⚠'},
+    hazardGiga:{ja:'⚠ 国家非常事態宣言 ⚠',en:'⚠ NATIONAL STATE OF EMERGENCY ⚠',ko:'⚠ 국가 비상사태 선언 ⚠',zh:'⚠ 国家紧急状态宣言 ⚠'},
+    hazardTera:{ja:'⚠ 人類存続危機宣言 ⚠',en:'⚠ HUMANITY EXTINCTION CRISIS ⚠',ko:'⚠ 인류 존속 위기 선언 ⚠',zh:'⚠ 人类存续危机宣言 ⚠'},
+    hazardFinal:{ja:'⚠ 終焉宣言 ⚠',en:'⚠ DECLARATION OF THE END ⚠',ko:'⚠ 종언 선언 ⚠',zh:'⚠ 终焉宣言 ⚠'},
     eyebrowProfile:{ja:'PROFILE',en:'PROFILE',ko:'PROFILE',zh:'PROFILE'},
+    dangerLevelLabel:{ja:'DANGER LEVEL',en:'DANGER LEVEL',ko:'DANGER LEVEL',zh:'DANGER LEVEL'},
     footerMark:{ja:'AVATAR INTRODUCTION CARD',en:'AVATAR INTRODUCTION CARD',ko:'AVATAR INTRODUCTION CARD',zh:'AVATAR INTRODUCTION CARD'},
+    kDeaths:{ja:'死亡者数',en:'Deaths',ko:'사망자 수',zh:'死亡人数'},
+    kInjured:{ja:'負傷者数',en:'Injured',ko:'부상자 수',zh:'受伤人数'},
+    kCities:{ja:'壊滅都市数',en:'Cities Destroyed',ko:'파괴 도시 수',zh:'摧毁城市数'},
+    kBuildings:{ja:'倒壊建物数',en:'Buildings Collapsed',ko:'붕괴 건물 수',zh:'倒塌建筑数'},
+    kArea:{ja:'被害面積',en:'Damage Area',ko:'피해 면적',zh:'受灾面积'},
+    kCost:{ja:'被害総額',en:'Total Cost',ko:'총 피해액',zh:'损失总额'},
     kHeight:{ja:'身長',en:'Height',ko:'키',zh:'身高'},
     kWeight:{ja:'体重',en:'Weight',ko:'체중',zh:'体重'},
     kSizes:{ja:'スリーサイズ',en:'Measurements',ko:'쓰리사이즈',zh:'三围'},
     defaultName:{ja:'アバター名',en:'Avatar Name',ko:'아바타 이름',zh:'角色名称'},
     defaultDesc:{ja:'ここに紹介文が表示されます。',en:'Your description will appear here.',ko:'여기에 소개문이 표시됩니다.',zh:'这里将显示介绍文字。'},
     defaultPhotoEmpty:{ja:'画像未設定',en:'No image set',ko:'이미지 미설정',zh:'未设置图片'},
+    extraAttackPrefix:{ja:'攻撃: ',en:'Attack: ',ko:'공격: ',zh:'攻击:'},
+    extraDurabilityPrefix:{ja:'耐久: ',en:'Durability: ',ko:'내구성: ',zh:'耐久:'},
     statusExporting:{ja:'書き出し中...',en:'Exporting...',ko:'내보내는 중...',zh:'正在导出...'},
     statusSavedPrefix:{ja:'保存しました: ',en:'Saved: ',ko:'저장됨: ',zh:'已保存:'},
     statusFailPrefix:{ja:'書き出しに失敗しました: ',en:'Export failed: ',ko:'내보내기 실패: ',zh:'导出失败:'},
     statusLibFail:{ja:'画像出力ライブラリの読み込みに失敗しました。通信環境を確認してください。',en:'Failed to load the image export library. Please check your network connection.',ko:'이미지 내보내기 라이브러리를 불러오지 못했습니다. 네트워크 환경을 확인해 주세요.',zh:'图片导出库加载失败,请检查网络连接。'},
     statusHeightUnreadable:{ja:'身長の単位(m/km/光年/cm)が読み取れなかったため体重は概算されませんでした。',en:'Could not read the height unit (m/km/light-years/cm), so weight was not estimated.',ko:'키 단위(m/km/광년/cm)를 읽을 수 없어 체중이 추정되지 않았습니다.',zh:'无法识别身高单位(m/km/光年/cm),因此未能估算体重。'},
+    zeroDeaths:{ja:'不明(平和的)',en:'Unknown (peaceful)',ko:'불명(평화적)',zh:'未知(和平)'},
+    zeroCities:{ja:'0都市',en:'0 cities',ko:'0개 도시',zh:'0座城市'},
+    zeroBuildings:{ja:'0棟',en:'0 buildings',ko:'0동',zh:'0栋'},
+    zeroArea:{ja:'測定なし',en:'Not measured',ko:'측정 없음',zh:'无测量数据'},
+    zeroCost:{ja:'0円',en:'0 USD',ko:'0원',zh:'0元'},
+    irreparable:{ja:'修復不能',en:'Beyond Repair',ko:'복구 불가능',zh:'无法修复'},
   };
   const LANG_STORAGE_KEY = 'avatarCardMaker.lang';
   const SUPPORTED_LANGS = ['ja','en','ko','zh'];
@@ -688,6 +1004,7 @@
 
   /* ================= state ================= */
   const state = {
+    mode: 'normal',
     orientation: 'portrait',
     avatar: null,
     expressions: [null,null,null],
@@ -720,10 +1037,24 @@
 
   /* ---------------- number / localized unit formatting ---------------- */
   const UNIT_WORDS = {
-    ja:{about:'約'},
-    en:{about:'approx. '},
-    ko:{about:'약 '},
-    zh:{about:'约'}
+    ja:{people:'人', buildings:'棟', cities:'都市', about:'約', sep:'〜'},
+    en:{people:' people', buildings:' buildings', cities:' cities', about:'approx. ', sep:'–'},
+    ko:{people:'명', buildings:'동', cities:'개 도시', about:'약 ', sep:'~'},
+    zh:{people:'人', buildings:'栋', cities:'座城市', about:'约', sep:'~'}
+  };
+  // 被害総額の通貨: 各言語圏で一般的な通貨に換算して表示する(内部計算は常に円ベース)
+  const CURRENCY = {
+    ja:{unit:'円', rateFromJPY:1},
+    en:{unit:' USD', rateFromJPY:1/150},
+    ko:{unit:'원', rateFromJPY:9},
+    zh:{unit:'元', rateFromJPY:1/20.5}
+  };
+  // 面積はその言語圏で一般的な単位に変換して表示する(内部計算は常にkm^2)
+  const AREA_UNIT = {
+    ja:{unit:'km²', factor:1},
+    zh:{unit:'平方公里', factor:1},
+    ko:{unit:'km²', factor:1},
+    en:{unit:'sq mi', factor:0.386102}
   };
   const SCALE_WORDS = {
     ja:[[1e20,'垓'],[1e16,'京'],[1e12,'兆'],[1e8,'億'],[1e4,'万']],
@@ -731,6 +1062,7 @@
     ko:[[1e20,'해'],[1e16,'경'],[1e12,'조'],[1e8,'억'],[1e4,'만'],[1e3,'천']],
     en:[[1e18,'E'],[1e15,'P'],[1e12,'T'],[1e9,'G'],[1e6,'M'],[1e3,'k']]
   };
+  const JA_IRREPARABLE_THRESHOLD = 1e24; // 垓(10^20)より上の単位が必要になる金額
   function comma(n){ return Math.round(n).toLocaleString('en-US'); }
 
   /* ---------------- ruby (furigana) support in description ----------------
@@ -771,6 +1103,81 @@
     if(n >= 1) return comma(n);
     return n.toFixed(3);
   }
+  function valueStr(value,unitWord){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    return `${uw.about}${comma(value)}${unitWord}`;
+  }
+  // 日本語のときは人数・棟数・都市数も万/億/兆/京/垓表記にする。他言語はカンマ区切りのまま。
+  function countStr(value,unitWord){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    if(currentLang === 'ja'){
+      return `${uw.about}${formatBigNumber(value)}${unitWord}`;
+    }
+    return valueStr(value,unitWord);
+  }
+  // 被害総額: 言語ごとの通貨に換算。日本語で垓を超える場合は「修復不能」。
+  function costStr(valueJPY){
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    const conv = CURRENCY[currentLang] || CURRENCY.ja;
+    if(currentLang === 'ja' && valueJPY >= JA_IRREPARABLE_THRESHOLD){
+      return t('irreparable');
+    }
+    const valueLocal = valueJPY * conv.rateFromJPY;
+    return `${uw.about}${formatBigNumber(valueLocal)}${conv.unit}`;
+  }
+
+  /* ---------------- damage calculation ---------------- */
+  function computeDamage(n){
+    n = Math.max(0, Number(n)||0);
+    const uw = UNIT_WORDS[currentLang] || UNIT_WORDS.ja;
+    if(n<=0){
+      return { deaths:t('zeroDeaths'), injured:t('zeroDeaths'), cities:t('zeroCities'), buildings:t('zeroBuildings'), area:t('zeroArea'), cost:t('zeroCost') };
+    }
+    const deathsBase = 4 * Math.pow(1.62, n);
+    const injuredMult = 2.3 + Math.random()*1.7;
+    const injuredBase = deathsBase * injuredMult;
+    const citiesBase = n < 6 ? 0 : 0.35 * Math.pow(1.28, n-5);
+    const buildingsMult = 5 + Math.random()*4;
+    const buildingsBase = deathsBase * buildingsMult;
+    const areaBase = 0.07 * Math.pow(1.45, n);
+    const costBase = buildingsBase*2.5e8 + areaBase*6e9;
+
+    // ベース値に多少のばらつきを加えた単体の概算値を算出する
+    function jitter(base, lowMul, highMul){
+      return base * (lowMul + Math.random()*(highMul-lowMul));
+    }
+    const deathsVal = jitter(deathsBase, 0.85, 1.2);
+    const injuredVal = jitter(injuredBase, 0.85, 1.2);
+    const citiesVal = jitter(Math.max(citiesBase,0), 0.85, 1.2);
+    const buildingsVal = jitter(buildingsBase, 0.85, 1.2);
+    const areaVal = jitter(areaBase, 0.85, 1.2);
+    const costVal = jitter(costBase, 0.85, 1.2);
+
+    const areaCfg = AREA_UNIT[currentLang] || AREA_UNIT.ja;
+    const areaValDisp = areaVal * areaCfg.factor;
+
+    return {
+      deaths: countStr(deathsVal, uw.people),
+      injured: countStr(injuredVal, uw.people),
+      cities: countStr(citiesVal, uw.cities),
+      buildings: countStr(buildingsVal, uw.buildings),
+      area: `${uw.about}${areaValDisp.toFixed(1)}${areaCfg.unit}`,
+      cost: costStr(costVal)
+    };
+  }
+  function runAutoCalc(){
+    const stars = Number($('f-stars').value)||0;
+    const r = computeDamage(stars);
+    $('f-deaths').value = r.deaths;
+    $('f-injured').value = r.injured;
+    $('f-cities').value = r.cities;
+    $('f-buildings').value = r.buildings;
+    $('f-area').value = r.area;
+    $('f-cost').value = r.cost;
+    renderAll();
+  }
+  $('recalcBtn').addEventListener('click', runAutoCalc);
+  $('f-stars').addEventListener('change', runAutoCalc);
 
   /* ---------------- weight estimation from height ---------------- */
   function parseHeightValue(text){
@@ -825,7 +1232,44 @@
   $('f-height').addEventListener('change', ()=>autoEstimateWeight(false));
   $('estimateWeightBtn').addEventListener('click', ()=>autoEstimateWeight(true));
 
-  /* ---------------- orientation toggle ---------------- */
+  /* ---------------- tier palette ---------------- */
+  function giantTier(stars){
+    if(stars<=0)  return {key:'peace',   badge:null,   accent:'#2ecc71', text:'#06301b', dark:'#0d2f1c', fire:false, hazardKey:'hazardPeace',   showBadge:false};
+    if(stars<=9)  return {key:'caution', badge:null,   accent:'#ffc93c', text:'#1c1c26', dark:'#332a08', fire:false, hazardKey:'hazardCaution', showBadge:false};
+    if(stars<=19) return {key:'alert',   badge:null,   accent:'#e8291c', text:'#ffffff', dark:'#2a0d0d', fire:false, hazardKey:'hazardAlert',   showBadge:false};
+    if(stars<=29) return {key:'mega',    badge:'MEGA', accent:'#9b4de0', text:'#ffffff', dark:'#231030', fire:false, hazardKey:'hazardMega',    showBadge:true};
+    if(stars<=39) return {key:'giga',    badge:'GIGA', accent:'#e8291c', text:'#ffffff', dark:'#2a0d0d', fire:true,  hazardKey:'hazardGiga',    showBadge:true};
+    if(stars<=49) return {key:'tera',    badge:'TERA', accent:'#9b4de0', text:'#ffffff', dark:'#1c1024', fire:true,  hazardKey:'hazardTera',    showBadge:true};
+    return             {key:'final',   badge:'TERA', accent:'#141414', text:'#ffffff', dark:'#050505', fire:false, hazardKey:'hazardFinal',   showBadge:true};
+  }
+
+  /* ---------------- mode / orientation toggles ---------------- */
+  function setMode(mode){
+    state.mode = mode;
+    const isGiant = mode === 'giant';
+    $('modeSwitch').classList.toggle('giant', isGiant);
+    $('modeSwitch').setAttribute('aria-pressed', String(isGiant));
+    $('modeSwitchIcon').textContent = isGiant ? '⚠' : '🐣';
+    $('formPanel').classList.toggle('giant-theme', isGiant);
+    document.querySelectorAll('.giant-only').forEach(el=>{
+      el.style.display = isGiant ? 'block' : 'none';
+    });
+    $('theCard').classList.toggle('giant', isGiant);
+    $('completeBtn').classList.toggle('giant', isGiant);
+    if(isGiant && !$('f-deaths').value){ runAutoCalc(); }
+    if(!$('f-weight').value){ autoEstimateWeight(false); }
+    renderAll();
+  }
+  $('modeSwitch').addEventListener('click', ()=>{
+    setMode(state.mode === 'giant' ? 'normal' : 'giant');
+  });
+  $('modeSwitch').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      setMode(state.mode === 'giant' ? 'normal' : 'giant');
+    }
+  });
+
   function updatePhotoHint(){
     $('p-photo-hint').textContent = state.orientation === 'landscape' ? t('hintPhotoLandscape') : t('hintPhotoPortrait');
   }
@@ -1045,6 +1489,49 @@
     else { sizesWrap.style.display='none'; }
 
     $('p-desc').innerHTML = renderDescWithRuby($('f-desc').value.trim() || t('defaultDesc'));
+
+    const card = $('theCard');
+    if(state.mode==='giant'){
+      const stars = Math.max(0, Number($('f-stars').value)||0);
+      if(stars > 10){
+        $('p-stars').innerHTML = `★<span class="n">×${stars}</span>`;
+      } else {
+        $('p-stars').innerHTML = '★'.repeat(stars) + '☆'.repeat(Math.max(0,10-stars));
+      }
+
+      const tier = giantTier(stars);
+      card.style.setProperty('--tier-accent', tier.accent);
+      card.style.setProperty('--tier-accent-text', tier.text);
+      card.style.setProperty('--tier-dark-bg', tier.dark);
+      card.style.setProperty('--tier-accent-visible', tier.key==='final' ? '#ffffff' : tier.accent);
+      card.dataset.tier = tier.key;
+      card.classList.toggle('mega', tier.showBadge);
+
+      $('p-mega-badge').textContent = tier.badge || '';
+      $('p-ribbon').textContent = tier.badge || '';
+      $('p-hazard-text').textContent = t(tier.hazardKey);
+
+      $('p-deaths').textContent = $('f-deaths').value || '-';
+      $('p-injured').textContent = $('f-injured').value || '-';
+      $('p-cities').textContent = $('f-cities').value || '-';
+      $('p-buildings').textContent = $('f-buildings').value || '-';
+      $('p-area').textContent = $('f-area').value || '-';
+      $('p-cost').textContent = $('f-cost').value || '-';
+
+      const extraRow = $('p-extra');
+      extraRow.innerHTML='';
+      const atk = $('f-attack').value.trim();
+      const dur = $('f-durability').value.trim();
+      if(atk){ const c=document.createElement('div'); c.className='extra-chip'; c.textContent=`${t('extraAttackPrefix')}${atk}`; extraRow.appendChild(c); }
+      if(dur){ const c=document.createElement('div'); c.className='extra-chip'; c.textContent=`${t('extraDurabilityPrefix')}${dur}`; extraRow.appendChild(c); }
+    } else {
+      card.classList.remove('mega');
+      card.style.removeProperty('--tier-accent');
+      card.style.removeProperty('--tier-accent-text');
+      card.style.removeProperty('--tier-dark-bg');
+      card.style.removeProperty('--tier-accent-visible');
+      delete card.dataset.tier;
+    }
   }
 
   document.getElementById('cardForm').addEventListener('input', renderAll);
@@ -1085,6 +1572,7 @@
   applyI18n();
   applyTheme();
   updatePhotoHint();
+  runAutoCalc();
   renderAll();
 })();
 </script>
