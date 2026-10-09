@@ -10,9 +10,10 @@ body {
 .background-slideshow {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
+  background: #0f1220;
 }
 
 .bg-slide {
@@ -23,6 +24,7 @@ body {
   background-size: cover;
   opacity: 0;
   transition: opacity 1s ease;
+  pointer-events: none;
 }
 
 .bg-slide.visible {
@@ -30,6 +32,9 @@ body {
 }
 
 .container {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
   display: flex;
   gap: 24px;
   padding: 40px;
@@ -39,7 +44,18 @@ body {
   overflow: hidden;
   box-sizing: border-box;
 }
+body.background-expanded .background-slideshow {
+  z-index: 2;
+  cursor: zoom-out;
+}
+body.background-expanded .bg-slide {
+  background-size: contain;
+}
+body.background-expanded .container {
+  display: none;
+}
 .profile {
+  pointer-events: auto;
   background: rgba(105, 105, 221, 0.85);
   border-radius: 20px;
   padding: 24px;
@@ -175,6 +191,7 @@ body {
   text-align: center;
 }
 .intro-section {
+  pointer-events: auto;
   flex: 1;
   background: rgba(20, 20, 30, 0.85);
   border-radius: 20px;

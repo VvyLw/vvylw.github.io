@@ -79,6 +79,9 @@ const backgroundImages = [
 let currentBgIndex = 0;
 let activeSlide = 0;
 let bgSlides = [];
+let backgroundSlideInterval;
+let isBackgroundExpanded = false;
+let backgroundTransitionVersion = 0;
 
 const hasLangPrefix = () => window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/');
 const getBgPath = (imagePath) => hasLangPrefix() ? `../${imagePath}` : imagePath;
@@ -102,8 +105,10 @@ const getRandomIndex = (exclude) => {
 const showBackgroundSlide = async (nextIndex) => {
     if (!bgSlides.length) return;
 
+    const transitionVersion = backgroundTransitionVersion;
     const nextPath = getBgPath(backgroundImages[nextIndex]);
     await preloadImage(nextPath);
+    if (isBackgroundExpanded || transitionVersion !== backgroundTransitionVersion) return;
 
     const hiddenSlide = bgSlides[activeSlide ^ 1];
     const visibleSlide = bgSlides[activeSlide];
@@ -114,6 +119,26 @@ const showBackgroundSlide = async (nextIndex) => {
 
     activeSlide ^= 1;
     currentBgIndex = nextIndex;
+};
+
+const startBackgroundSlideshow = () => {
+    clearInterval(backgroundSlideInterval);
+    backgroundSlideInterval = setInterval(() => {
+        const nextIndex = getRandomIndex(currentBgIndex);
+        showBackgroundSlide(nextIndex);
+    }, 20000);
+};
+
+const setBackgroundExpanded = (expanded) => {
+    isBackgroundExpanded = expanded;
+    backgroundTransitionVersion++;
+    document.body.classList.toggle('background-expanded', expanded);
+
+    if (expanded) {
+        clearInterval(backgroundSlideInterval);
+    } else {
+        startBackgroundSlideshow();
+    }
 };
 
 const initializeBackgroundSlideshow = async () => {
@@ -140,11 +165,11 @@ const initializeBackgroundSlideshow = async () => {
     slideA.classList.add('visible');
     currentBgIndex = firstIndex;
     activeSlide = 0;
+    startBackgroundSlideshow();
 
-    setInterval(() => {
-        const nextIndex = getRandomIndex(currentBgIndex);
-        showBackgroundSlide(nextIndex);
-    }, 20000);
+    slideshowContainer.addEventListener('click', () => {
+        setBackgroundExpanded(!isBackgroundExpanded);
+    });
 };
 
 // 初回背景設定（画像がある場合）
