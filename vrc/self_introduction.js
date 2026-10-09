@@ -85,6 +85,7 @@ let backgroundTransitionVersion = 0;
 
 const hasLangPrefix = () => window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/');
 const getBgPath = (imagePath) => hasLangPrefix() ? `../${imagePath}` : imagePath;
+const languageStorageKey = 'selfIntroductionLanguage';
 
 const preloadImage = (src) => new Promise((resolve) => {
     const img = new Image();
@@ -191,7 +192,30 @@ const syncMicGauge = (language) => {
     micGaugeInterval = setInterval(updateGauge, 100);
 };
 
-const loadLanguage = async (language, updateHistory = false) => {
+const captureJapaneseTranslations = () => {
+    const translations = Object.fromEntries(
+        Array.from(document.querySelectorAll('[data-i18n]'), (element) => [
+            element.dataset.i18n,
+            element.innerText.trim(),
+        ])
+    );
+    translations.pageTitle = document.title;
+    return translations;
+};
+
+const applyUnifiedLanguage = (language, translations) => {
+    for (const [key, value] of Object.entries(translations)) {
+        if (key === 'pageTitle') continue;
+        const element = document.querySelector(`[data-i18n="${key}"]`);
+        if (!element) throw new Error(`Missing translation target: ${key}`);
+        element.textContent = value;
+    }
+
+    document.title = translations.pageTitle;
+    document.documentElement.lang = language;
+};
+
+const loadLegacyLanguage = async (language, updateHistory) => {
     const targetUrl = new URL(window.location.href);
     targetUrl.pathname = targetUrl.pathname.replace(/\/(?:ja|en)\//, `/${language}/`);
 
@@ -217,8 +241,50 @@ const loadLanguage = async (language, updateHistory = false) => {
     if (updateHistory) history.pushState({ language }, '', targetUrl);
 };
 
+const loadLanguage = async (language, updateHistory = false) => {
+    if (!document.querySelector('[data-i18n]')) {
+        return loadLegacyLanguage(language, updateHistory);
+    }
+
+    let translations = japaneseTranslations;
+    if (language === 'en') {
+        const translationsUrl = new URL('self_introduction.en.json', document.baseURI);
+        const response = await fetch(translationsUrl);
+        if (!response.ok) throw new Error(`Translation request failed: ${response.status}`);
+        translations = await response.json();
+    }
+
+    applyUnifiedLanguage(language, translations);
+    syncMicGauge(language);
+    sessionStorage.setItem(languageStorageKey, language);
+
+    if (updateHistory) {
+        history.pushState(
+            { ...history.state, selfIntroductionLanguage: language },
+            '',
+            window.location.href
+        );
+    }
+};
+
+let japaneseTranslations = {};
+
 document.addEventListener('DOMContentLoaded', () => {
-    syncMicGauge(document.documentElement.lang);
+    japaneseTranslations = captureJapaneseTranslations();
+    const isUnifiedPage = Boolean(document.querySelector('[data-i18n]'));
+    const initialLanguage = isUnifiedPage && sessionStorage.getItem(languageStorageKey) === 'en' ? 'en' : 'ja';
+    syncMicGauge(initialLanguage);
+
+    if (isUnifiedPage) {
+        history.replaceState(
+            { ...history.state, selfIntroductionLanguage: initialLanguage },
+            '',
+            window.location.href
+        );
+        if (initialLanguage === 'en') {
+            loadLanguage('en').catch((error) => console.error('Could not restore language:', error));
+        }
+    }
 
     document.querySelectorAll('.intro-img').forEach((img) => {
         img.addEventListener('click', () => {
@@ -249,8 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    window.addEventListener('popstate', async () => {
-        const language = window.location.pathname.match(/\/(ja|en)\//)?.[1];
+    window.addEventListener('popstate', async (event) => {
+        const language = document.querySelector('[data-i18n]')
+            ? event.state?.selfIntroductionLanguage
+            : window.location.pathname.match(/\/(ja|en)\//)?.[1];
         if (!language || language === document.documentElement.lang || languageRequestInProgress) return;
 
         languageRequestInProgress = true;

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>自己紹介シート</title>
+  <link rel="stylesheet" href="self_introduction.css">
+  <script src="self_introduction.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <div class="profile">
+      <div class="field-group">
+        <span class="field-label" data-i18n="nameLabel">名前</span>
+        <span class="field-value">VvyLw</span>
+      </div>
+      <div class="field-group">
+        <span class="field-label" data-i18n="genderLabel">性別</span>
+        <span class="field-value" data-i18n="genderValue">男</span>
+        <span class="field-label" data-i18n="environmentLabel">環境</span>
+        <span class="field-value wide">PCVR / Quest / Desktop</span>
+      </div>
+      <div class="sns-icons">
+        <img src="img/vrc.svg" class="sns-icon" alt="VRChat">
+        <span class="field-value"><a href="https://vrchat.com/home/user/usr_488cfd42-6af4-436f-87be-171220039b3d" target="_blank" rel="noopener noreferrer">VvyLw</a></span>
+      </div>
+      <div class="sns-icons">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="sns-icon" alt="X">
+        <span class="field-value"><a href="https://x.com/wa_haya_exe" target="_blank" rel="noopener noreferrer">@wa_haya_exe</a></span>
+      </div>
+      <div class="sns-icons">
+        <img src="img/logo_icon_white_r.svg" class="sns-icon" alt="Discord">
+        <span class="field-value"><a href="https://vvylw.booth.pm/" target="_blank" rel="noopener noreferrer">わーは屋</a></span>
+      </div>
+      <div class="field-group">
+        <span class="field-label" data-i18n="languageLabel">言語</span>
+        <span class="field-value">
+          <span class="lang-current" data-i18n="currentLanguage">日本語</span>
+          <span> / </span>
+          <span class="lang-switch" id="switchLang" data-i18n="switchLanguage">English</span>
+        </span>
+      </div>
+      <div class="field-group">
+        <span class="field-label" data-i18n="micLabel">VC率</span>
+        <div class="mic-bar-bg">
+          <div class="mic-bar" id="micBar"></div>
+        </div>
+        <span class="mic-value" data-i18n="micValue" style="font-size:0.95em; color:#aaa;">???</span>
+      </div>
+      <div class="statuses">
+        <div class="status-item"><span class="status-dot dot-blue"></span><span data-i18n="statusRecruiting">人間募集</span></div>
+        <div class="status-item"><span class="status-dot dot-green"></span><span data-i18n="statusUsually">常時</span></div>
+        <div class="status-item"><span class="status-dot dot-orange"></span><span data-i18n="statusConditions">海外Public / リア友 / 就寝準備</span></div>
+        <div class="status-item"><span class="status-dot dot-red"></span><span data-i18n="statusHome">実家</span></div>
+      </div>
+      <div class="friend-request">
+        <span class="field-label" data-i18n="friendRequestsLabel">フレンド申請</span>
+        <span class="field-value" data-i18n="friendRequestsValue">だれでもOK</span>
+      </div>
+      <div class="boundaries">
+        <div class="boundary-item" data-i18n="boundaryTouching">触る: ◎</div>
+        <div class="boundary-item" data-i18n="boundaryCloseRange">近距離: ◎</div>
+        <div class="boundary-item" data-i18n="boundaryPartner">お砂糖: いる</div>
+        <div class="boundary-item" data-i18n="boundaryWeapons">武器: かかって来い</div>
+        <div class="boundary-item" data-i18n="boundaryViolence">暴言/暴力: まあええか</div>
+        <div class="boundary-item" data-i18n="boundaryDirtyJokes">下ネタ: ○</div>
+      </div>
+    </div>
+    <div class="intro-section">
+      <div class="intro-text" data-i18n="introText">わーはやです<br>
+        喋るとうるさいです<br>
+        たまにでかくなる<br>
+        V感はないです<br>
+        よろしくね～</div>
+      <h2>Avatars</h2>
+      <div class="intro-imgs">
+        <img src="img/Binah_Wizard.webp?v=2" class="intro-img" alt="avatar1" data-avatar-name="Binah -Wizard-" />
+        <img src="img/Binah_Inverted.webp?v=2" class="intro-img" alt="avatar2" data-avatar-name="Binah -Inverted-" />
+        <img src="img/Binah_Casual.webp?v=2" class="intro-img right" alt="avatar3" data-avatar-name="Binah -Casual-" />
+        <img src="img/Moe_Magician.webp?v=2" class="intro-img" alt="avatar4" data-avatar-name="Moe -Magician-" />
+        <img src="img/Moe_Student.webp?v=2" class="intro-img top" alt="avatar5" data-avatar-name="Moe -Student-" />
+        <img src="img/Kipfel_Suzuran.webp?v=2" class="intro-img" alt="avatar6" data-avatar-name="Kipfel -Suzuran-" />
+        <img src="img/Moe_Bob.webp?v=2" class="intro-img top" alt="avatar7" data-avatar-name="Moe -Bob-" />
+        <img src="img/Chiffon_Happi.webp?v=2" class="intro-img" alt="avatar8" data-avatar-name="Chiffon -Happi-" />
+        <img src="img/Chiffon_Philanthropist.webp?v=2" class="intro-img" alt="avatar9" data-avatar-name="Chiffon -Philanthropist-" />
+        <img src="img/Retinia_Vagabond.webp?v=2" class="intro-img top" alt="avatar10" data-avatar-name="Retinia -Vagabond-" />
+        <img src="img/Mafuyu_Cryostasis.webp?v=2" class="intro-img top" alt="avatar11" data-avatar-name="Mafuyu -Cryostasis-" />
+        <img src="img/Mafuyu_For.webp?v=2" class="intro-img" alt="avatar12" data-avatar-name="Mafuyu -For-" />
+        <img src="img/Kumaly_KawaiiFutureBass.webp?v=2" class="intro-img" alt="avatar13" data-avatar-name="Kumaly -KawaiiFutureBass-" />
+        <img src="img/Chiffon_Geist.webp?v=2" class="intro-img right" alt="avatar14" data-avatar-name="Chiffon -Geist-" />
+        <img src="img/Kumaly_WA.webp?v=2" class="intro-img" alt="avatar15" data-avatar-name="Kumaly -WA-" />
+        <img src="img/Mafuyu_Nonurge.webp?v=2" class="intro-img top" alt="avatar16" data-avatar-name="Mafuyu -Nonurge-" />
+        <img src="img/Kipfel_Huitloxopetl.webp?v=2" class="intro-img top" alt="avatar17-1" data-avatar-name="Kipfel -Huitloxopetl-" />
+        <img src="img/Huitloxopetl.webp?v=2" class="intro-img" alt="avatar17-2" data-avatar-name="Huitloxopetl" />
+        <img src="img/Chiffon_Hod.webp?v=2" class="intro-img" alt="avatar18" data-avatar-name="Chiffon -Hod-" />
+        <img src="img/Chiffon_Woelfe.webp?v=2" class="intro-img" alt="avatar19" data-avatar-name="Chiffon -Wölfe-" />
+        <img src="img/Kumaly_Enthusiast.webp?v=2" class="intro-img" alt="avatar20" data-avatar-name="Kumaly -Enthusiast-" />
+        <img src="img/Retinia_Maid.webp?v=2" class="intro-img" alt="avatar21" data-avatar-name="Retinia -Maid-" />
+        <img src="img/Kumaly_Street.webp?v=2" class="intro-img" alt="avatar22" data-avatar-name="Kumaly -Street-" />
+        <img src="img/Plum_Apathy.webp?v=2" class="intro-img top" alt="avatar23" data-avatar-name="Plum -Apathy-" />
+        <img src="img/Plum_Ruination.webp?v=2" class="intro-img top" alt="avatar24" data-avatar-name="Plum -Ruination-" />
+        <img src="img/Plum_Nappie.webp?v=2" class="intro-img top" alt="avatar25" data-avatar-name="Plum -Nappie-" />
+        <img src="img/Plum_Xrisella.webp?v=2" class="intro-img" alt="avatar26" data-avatar-name="Plum -Xrisella-" />
+        <img src="img/Binah_Medicaster.webp?v=2" class="intro-img" alt="avatar27" data-avatar-name="Binah -Medicaster-" />
+        <img src="img/Plum_Void.webp?v=2" class="intro-img" alt="avatar28" data-avatar-name="Plum -Void-" />
+        <img src="img/Plum_Инсайт.webp?v=2" class="intro-img" alt="avatar30" data-avatar-name="Plum -Инсайт-" />
+      </div>
+    </div>
+  </div>
+  <div id="img-modal">
+    <div class="modal-content">
+      <img src="" alt="拡大画像" />
+      <div class="avatar-name"></div>
+    </div>
+  </div>
+</body>
+</html>
