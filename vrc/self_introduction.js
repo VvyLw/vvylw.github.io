@@ -9,6 +9,7 @@ const backgroundImages = [
     'img/bg/Binah_Inverted_BackGround8.webp',
     'img/bg/Binah_Inverted_BackGround9.webp',
     'img/bg/Binah_Lite.webp',
+    'img/bg/Binah_Medicaster_vs_Mafuyu_For.webp',
     'img/bg/Binah_Medicaster.webp',
     'img/bg/Binah_Medicaster2.webp',
     'img/bg/Binah_Wizard.webp',
@@ -26,9 +27,11 @@ const backgroundImages = [
     'img/bg/Kumaly_Street2.webp',
     'img/bg/Mafuyu_For.webp',
     'img/bg/Moe_Magician.webp',
+    'img/bg/Plum_Ruination.webp',
     'img/bg/Plum_Void.webp',
     'img/bg/Plum_Xrisella.webp',
     'img/bg/Plum_Инсайт.webp',
+    'img/bg/Plum_Инсайт2.webp',
     'img/bg/Retinia_Vagabond_and_Mafuyu_For.webp',
     'img/bg/Retinia_Vagabond.webp',
     'img/bg/Retinia_Vagabond2.webp',
@@ -147,24 +150,51 @@ const initializeBackgroundSlideshow = async () => {
 // 初回背景設定（画像がある場合）
 initializeBackgroundSlideshow();
 
-if(window.location.pathname.includes('/ja/')) {
-    const micBar = document.getElementById('micBar');
+let micGaugeInterval;
+let languageRequestInProgress = false;
+
+const syncMicGauge = (language) => {
+    clearInterval(micGaugeInterval);
+    if (language !== 'ja') return;
 
     const updateGauge = () => {
-        const randomPercentage = Math.floor(Math.random() * 101);
-        micBar.style.width = randomPercentage + '%';
+        const micBar = document.querySelector('.mic-bar');
+        if (micBar) micBar.style.width = `${Math.floor(Math.random() * 101)}%`;
     };
 
-    setInterval(updateGauge, 100);
     updateGauge();
-}
+    micGaugeInterval = setInterval(updateGauge, 100);
+};
 
-const urls = {
-    ja: 'https://vvylw.github.io/vrc/ja/self_introduction.html',
-    en: 'https://vvylw.github.io/vrc/en/self_introduction.html'
+const loadLanguage = async (language, updateHistory = false) => {
+    const targetUrl = new URL(window.location.href);
+    targetUrl.pathname = targetUrl.pathname.replace(/\/(?:ja|en)\//, `/${language}/`);
+
+    const response = await fetch(targetUrl);
+    if (!response.ok) throw new Error(`Language request failed: ${response.status}`);
+
+    const targetDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const nextProfile = targetDocument.querySelector('.profile');
+    const nextIntroText = targetDocument.querySelector('.intro-text');
+    const currentProfile = document.querySelector('.profile');
+    const currentIntroText = document.querySelector('.intro-text');
+
+    if (!nextProfile || !nextIntroText || !currentProfile || !currentIntroText) {
+        throw new Error('The requested page is missing translated content.');
+    }
+
+    currentProfile.replaceWith(nextProfile);
+    currentIntroText.replaceWith(nextIntroText);
+    document.documentElement.lang = targetDocument.documentElement.lang || language;
+    document.title = targetDocument.title;
+    syncMicGauge(language);
+
+    if (updateHistory) history.pushState({ language }, '', targetUrl);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    syncMicGauge(document.documentElement.lang);
+
     document.querySelectorAll('.intro-img').forEach((img) => {
         img.addEventListener('click', () => {
             const modal = document.getElementById('img-modal');
@@ -180,14 +210,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('img-modal').addEventListener('click', (e) => e.currentTarget.classList.remove('active'));
 
-    const switchLangElement = document.getElementById('switchLang');
-    
-    switchLangElement.addEventListener('click', () => {
-        const currentURL = window.location.href;
-        if (currentURL.includes('/en/')) {
-            window.location.href = urls.ja;
-        } else {
-            window.location.href = urls.en;
+    document.addEventListener('click', async (event) => {
+        if (!event.target.closest('#switchLang') || languageRequestInProgress) return;
+
+        const language = document.documentElement.lang === 'en' ? 'ja' : 'en';
+        languageRequestInProgress = true;
+        try {
+            await loadLanguage(language, true);
+        } catch (error) {
+            console.error('Could not switch language:', error);
+        } finally {
+            languageRequestInProgress = false;
+        }
+    });
+
+    window.addEventListener('popstate', async () => {
+        const language = window.location.pathname.match(/\/(ja|en)\//)?.[1];
+        if (!language || language === document.documentElement.lang || languageRequestInProgress) return;
+
+        languageRequestInProgress = true;
+        try {
+            await loadLanguage(language);
+        } catch (error) {
+            console.error('Could not restore language:', error);
+        } finally {
+            languageRequestInProgress = false;
         }
     });
 });
