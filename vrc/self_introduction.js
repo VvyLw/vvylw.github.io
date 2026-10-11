@@ -181,7 +181,11 @@ let languageRequestInProgress = false;
 
 const syncMicGauge = (language) => {
     clearInterval(micGaugeInterval);
-    if (language !== 'ja') return;
+    if (language !== 'ja') {
+        const micBar = document.querySelector('.mic-bar');
+        if (micBar) micBar.style.width = '3%';
+        return;
+    }
 
     const updateGauge = () => {
         const micBar = document.querySelector('.mic-bar');
