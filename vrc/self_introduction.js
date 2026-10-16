@@ -1,80 +1,4 @@
-const backgroundImages = [
-    'img/bg/Binah_Inverted_BackGround.webp',
-    'img/bg/Binah_Inverted_BackGround2.webp',
-    'img/bg/Binah_Inverted_BackGround3.webp',
-    'img/bg/Binah_Inverted_BackGround4.webp',
-    'img/bg/Binah_Inverted_BackGround5.webp',
-    'img/bg/Binah_Inverted_BackGround6.webp',
-    'img/bg/Binah_Inverted_BackGround7.webp',
-    'img/bg/Binah_Inverted_BackGround8.webp',
-    'img/bg/Binah_Inverted_BackGround9.webp',
-    'img/bg/Binah_Lite.webp',
-    'img/bg/Binah_Medicaster_vs_Mafuyu_For.webp',
-    'img/bg/Binah_Medicaster.webp',
-    'img/bg/Binah_Medicaster2.webp',
-    'img/bg/Binah_Wizard.webp',
-    'img/bg/friends.webp',
-    'img/bg/friends2.webp',
-    'img/bg/friends3.webp',
-    'img/bg/friends4.webp',
-    'img/bg/friends5.webp',
-    'img/bg/friends6.webp',
-    'img/bg/Kumaly_Enthusiast.webp',
-    'img/bg/Kumaly_KawaiiFutureBass_1p.webp',
-    'img/bg/Kumaly_KawaiiFutureBass_2p.webp',
-    'img/bg/Kumaly_KawaiiFutureBass2_2p.webp.webp',
-    'img/bg/Kumaly_Street.webp',
-    'img/bg/Kumaly_Street2.webp',
-    'img/bg/Mafuyu_For.webp',
-    'img/bg/Moe_Magician.webp',
-    'img/bg/Plum_Ruination.webp',
-    'img/bg/Plum_Void.webp',
-    'img/bg/Plum_Xrisella.webp',
-    'img/bg/Plum_Инсайт.webp',
-    'img/bg/Plum_Инсайт2.webp',
-    'img/bg/Retinia_Vagabond_and_Mafuyu_For.webp',
-    'img/bg/Retinia_Vagabond.webp',
-    'img/bg/Retinia_Vagabond2.webp',
-    'img/bg/Retinia_Vagabond3.webp',
-    'img/bg/Retinia_Vagabond4.webp',
-    'img/bg/Retinia_Vagabond5.webp',
-    'img/bg/with_CEO.webp',
-    'img/bg/with_EndReached.webp',
-    'img/bg/with_Eto.webp',
-    'img/bg/with_Eto2.webp',
-    'img/bg/with_Lintyan_and_Izumi.webp',
-    'img/bg/with_Minemine.webp',
-    'img/bg/with_Minemine2.webp',
-    'img/bg/with_Minemine3.webp',
-    'img/bg/with_nacha.webp',
-    'img/bg/with_nacha2.webp',
-    'img/bg/with_nacha3.webp',
-    'img/bg/with_nacha4.webp',
-    'img/bg/with_Ochappa.webp',
-    'img/bg/with_Raypon.webp',
-    'img/bg/with_Shirayuki9.webp',
-    'img/bg/with_SLEEP.webp',
-    'img/bg/with_SLEEP2.webp',
-    'img/bg/with_SLEEP3.webp',
-    'img/bg/with_tAKa_ENe.webp',
-    'img/bg/with_tAKa_ENe2.webp',
-    'img/bg/with_tAKa_ENe3.webp',
-    'img/bg/with_tAKa_ENe4.webp',
-    'img/bg/with_tAKa_ENe5.webp',
-    'img/bg/with_tAKa_ENe6.webp',
-    'img/bg/with_tAKa_ENe7.webp',
-    'img/bg/with_tAKa_ENe8.webp',
-    'img/bg/with_tAKa_ENe9.webp',
-    'img/bg/with_tAKa_ENe10.webp',
-    'img/bg/with_tAKa_ENe11.webp',
-    'img/bg/with_tAKa_ENe12.webp',
-    'img/bg/with_tAKa_ENe13.webp',
-    'img/bg/with_tAKa_ENe14.webp',
-    'img/bg/with_tAKa_ENe15.webp',
-    'img/bg/with_touffucha.webp',
-    'img/bg/with_wmir.webp',
-    'img/bg/with_YUKU_and_NekoSanjo.webp',
-];
+let backgroundImages = [];
 
 let currentBgIndex = 0;
 let activeSlide = 0;
@@ -86,6 +10,30 @@ let backgroundTransitionVersion = 0;
 const hasLangPrefix = () => window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/');
 const getBgPath = (imagePath) => hasLangPrefix() ? `../${imagePath}` : imagePath;
 const languageStorageKey = 'selfIntroductionLanguage';
+
+const loadBackgroundImages = async () => {
+    const images = [];
+    let nextUrl = 'https://api.github.com/repos/VvyLw/vvylw.github.io/contents/vrc/img/bg?per_page=100';
+
+    while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok) throw new Error(`Background image list request failed: ${response.status}`);
+
+        const entries = await response.json();
+        if (!Array.isArray(entries)) throw new Error('Background image list response was invalid.');
+
+        images.push(
+            ...entries
+                .filter((entry) => entry.type === 'file' && /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(entry.name))
+                .map((entry) => `img/bg/${entry.name}`)
+        );
+
+        const nextLink = response.headers.get('Link')?.match(/<([^>]+)>;\s*rel="next"/);
+        nextUrl = nextLink?.[1] ?? null;
+    }
+
+    return images;
+};
 
 const preloadImage = (src) => new Promise((resolve) => {
     const img = new Image();
@@ -143,6 +91,7 @@ const setBackgroundExpanded = (expanded) => {
 };
 
 const initializeBackgroundSlideshow = async () => {
+    backgroundImages = await loadBackgroundImages();
     if (!backgroundImages.length) return;
 
     const slideshowContainer = document.createElement('div');
@@ -174,7 +123,7 @@ const initializeBackgroundSlideshow = async () => {
 };
 
 // 初回背景設定（画像がある場合）
-initializeBackgroundSlideshow();
+initializeBackgroundSlideshow().catch((error) => console.error('Could not load background images:', error));
 
 let micGaugeInterval;
 let languageRequestInProgress = false;
