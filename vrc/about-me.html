@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff3f8">
+  <meta name="description" content="VvyLwの自己紹介とVRChatアバター">
+  <title>About Me | VvyLw</title>
+  <link rel="stylesheet" href="about-me-1.css">
+  <script src="about-me.js" defer></script>
+</head>
+<body class="intro-pending">
+  <div class="intro-screen" id="introScreen" aria-hidden="true">
+    <h1 class="intro-screen-title" id="introScreenTitle">ᚡᚡᚤᛚᚹ</h1>
+  </div>
+  <div class="ambient-background" role="button" tabindex="0" aria-label="背景画像を全体表示">
+    <div class="ambient-image ambient-image-a" aria-hidden="true"></div>
+    <div class="ambient-image ambient-image-b" aria-hidden="true"></div>
+  </div>
+  <main class="page-shell">
+    <header class="page-header">
+      <div class="brand-mark" aria-hidden="true"><span></span></div>
+      <p class="eyebrow" data-i18n="eyebrow">VRChat profile</p>
+      <h1 data-i18n="heroTitle" data-ja-title="VvyLw" aria-label="VvyLw">VvyLw</h1>
+      <button class="language-button" id="switchLang" type="button" aria-label="Switch language">
+        <span aria-hidden="true">🌐</span>
+        <span data-i18n="switchLanguage">English</span>
+      </button>
+    </header>
+
+    <div class="content-grid">
+      <section class="card profile-card" aria-labelledby="profile-heading">
+        <div class="card-heading">
+          <span class="heading-icon" aria-hidden="true">✿</span>
+          <h2 id="profile-heading" data-i18n="profileHeading">プロフィール</h2>
+        </div>
+
+        <div class="nameplate">
+          <span class="nameplate-label" data-i18n="nameLabel">名前</span>
+          <strong>VvyLw</strong>
+          <span class="nameplate-sparkle" aria-hidden="true">✧</span>
+        </div>
+
+        <dl class="profile-details">
+          <div class="detail-row">
+            <dt data-i18n="genderLabel">性別</dt>
+            <dd data-i18n="genderValue">男</dd>
+          </div>
+          <div class="detail-row">
+            <dt data-i18n="environmentLabel">環境</dt>
+            <dd>PCVR / Quest / Desktop</dd>
+          </div>
+        </dl>
+
+        <nav class="social-links" aria-label="Social links">
+          <a class="social-link" href="https://vrchat.com/home/user/usr_488cfd42-6af4-436f-87be-171220039b3d" target="_blank" rel="noopener noreferrer">
+            <img src="img/icon/vrc.svg" alt="" class="social-icon">
+            <span>VRChat</span><span class="social-handle">VvyLw</span>
+            <span class="external-mark" aria-hidden="true">↗</span>
+          </a>
+          <a class="social-link" href="https://x.com/wa_haya_exe" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="social-icon" alt="X">
+            <span>Twitter / X</span><span class="social-handle">@wa_haya_exe</span>
+            <span class="external-mark" aria-hidden="true">↗</span>
+          </a>
+          <a class="social-link" href="https://vvylw.booth.pm/" target="_blank" rel="noopener noreferrer">
+            <img src="img/icon/logo_icon_white_r.svg" alt="" class="social-icon discord-icon">
+            <span data-i18n="shopLabel">BOOTH</span><span class="social-handle">わーは屋</span>
+            <span class="external-mark" aria-hidden="true">↗</span>
+          </a>
+        </nav>
+
+        <div class="voice-card">
+          <div class="voice-heading">
+            <span data-i18n="micLabel">VC率</span>
+            <span class="voice-value">???</span>
+          </div>
+          <div class="voice-track" role="progressbar" aria-label="VC率" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="voice-meter"></span>
+          </div>
+          <p data-i18n="micNote">気分で喋ります</p>
+        </div>
+
+        <div class="status-list" aria-label="Online status">
+          <div class="status-item"><span class="status-dot dot-blue"></span><span data-i18n="statusRecruiting">人間募集</span></div>
+          <div class="status-item"><span class="status-dot dot-green"></span><span data-i18n="statusUsually">常時</span></div>
+          <div class="status-item"><span class="status-dot dot-orange"></span><span data-i18n="statusConditions">海外Public / リア友 / 就寝準備</span></div>
+          <div class="status-item"><span class="status-dot dot-red"></span><span data-i18n="statusHome">実家</span></div>
+        </div>
+
+        <div class="friend-note">
+          <img class="friend-note-icon" src="img/icon/friend_request_icon.png" alt="">
+          <span><strong data-i18n="friendRequestsLabel">フレンド申請</strong><br><span data-i18n="friendRequestsValue">だれでもOK</span></span>
+        </div>
+
+        <div class="boundaries">
+          <h3 data-i18n="boundariesHeading">Interaction Notes</h3>
+          <div class="boundary-list">
+            <span class="boundary-chip" data-i18n="boundaryTouching">触る: ◎</span>
+            <span class="boundary-chip" data-i18n="boundaryCloseRange">近距離: ◎</span>
+            <span class="boundary-chip" data-i18n="boundaryPartner">お砂糖: いる</span>
+            <span class="boundary-chip" data-i18n="boundaryWeapons">武器: かかって来い</span>
+            <span class="boundary-chip" data-i18n="boundaryViolence">暴言/暴力: まあええか</span>
+            <span class="boundary-chip" data-i18n="boundaryDirtyJokes">下ネタ: ○</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="right-column">
+        <section class="card intro-card" aria-labelledby="intro-heading">
+          <div class="card-heading">
+            <span class="heading-icon" aria-hidden="true">୨୧</span>
+            <h2 id="intro-heading" data-i18n="introHeading">はじめまして！</h2>
+          </div>
+          <p class="intro-text" data-i18n="introText">
+            わーはやです！
+            喋るとうるさいです
+            たまにでかくなります
+            V感はないです
+            よろしくね～
+          </p>
+          <div class="tag-list">
+            <span class="profile-tag" data-i18n="tagJapanese">日本人</span>
+            <span class="profile-tag" data-i18n="tagVC">VCは気分</span>
+            <span class="profile-tag" data-i18n="tagOther" hidden>Join前にステータス見てね</span>
+          </div>
+        </section>
+
+        <section class="card avatar-card" aria-labelledby="avatar-heading">
+          <div class="card-heading avatar-heading">
+            <div>
+              <span class="eyebrow" data-i18n="avatarEyebrow">MY AVATARS</span>
+              <h2 id="avatar-heading" data-i18n="avatarHeading">アバター</h2>
+            </div>
+          </div>
+          <div class="avatar-grid">
+            <button class="avatar-tile" type="button" aria-label="View Binah -Wizard-"><img src="img/Binah_Wizard.webp?v=2" alt="Binah -Wizard-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Binah -Inverted-"><img src="img/Binah_Inverted.webp?v=2" alt="Binah -Inverted-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Binah -Casual-"><img src="img/Binah_Casual.webp?v=2" alt="Binah -Casual-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Moe -Magician-"><img src="img/Moe_Magician.webp?v=2" alt="Moe -Magician-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Moe -Student-"><img src="img/Moe_Student.webp?v=2" alt="Moe -Student-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kipfel -Suzuran-"><img src="img/Kipfel_Suzuran.webp?v=2" alt="Kipfel -Suzuran-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Moe -Bob-"><img src="img/Moe_Bob.webp?v=2" alt="Moe -Bob-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Happi-"><img src="img/Chiffon_Happi.webp?v=2" alt="Chiffon -Happi-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Philanthropist-"><img src="img/Chiffon_Philanthropist.webp" alt="Chiffon -Philanthropist-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Retinia -Vagabond-"><img src="img/Retinia_Vagabond.webp?v=2" alt="Retinia -Vagabond-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Mafuyu -Cryostasis-"><img src="img/Mafuyu_Cryostasis.webp?v=2" alt="Mafuyu -Cryostasis-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Mafuyu -For-"><img src="img/Mafuyu_For.webp?v=2" alt="Mafuyu -For-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kumaly -KawaiiFutureBass-"><img src="img/Kumaly_KawaiiFutureBass.webp?v=2" alt="Kumaly -KawaiiFutureBass-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Geist-"><img src="img/Chiffon_Geist.webp?v=2" alt="Chiffon -Geist-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kumaly -WA-"><img src="img/Kumaly_WA.webp?v=2" alt="Kumaly -WA-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Mafuyu -Nonurge-"><img src="img/Mafuyu_Nonurge.webp?v=2" alt="Mafuyu -Nonurge-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kipfel -Huitloxopetl-"><img src="img/Kipfel_Huitloxopetl.webp?v=2" alt="Kipfel -Huitloxopetl-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Huitloxopetl"><img src="img/Huitloxopetl.webp?v=2" alt="Huitloxopetl" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Hod-"><img src="img/Chiffon_Hod.webp?v=2" alt="Chiffon -Hod-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Wölfe-"><img src="img/Chiffon_Woelfe.webp?v=2" alt="Chiffon -Wölfe-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kumaly -Enthusiast-"><img src="img/Kumaly_Enthusiast.webp?v=2" alt="Kumaly -Enthusiast-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Retinia -Maid-"><img src="img/Retinia_Maid.webp?v=2" alt="Retinia -Maid-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Kumaly -Street-"><img src="img/Kumaly_Street.webp?v=2" alt="Kumaly -Street-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Apathy-"><img src="img/Plum_Apathy.webp?v=2" alt="Plum -Apathy-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Ruination-"><img src="img/Plum_Ruination.webp?v=2" alt="Plum -Ruination-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Nappie-"><img src="img/Plum_Nappie.webp?v=2" alt="Plum -Nappie-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Xrisella-"><img src="img/Plum_Xrisella.webp?v=2" alt="Plum -Xrisella-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Binah -Medicaster-"><img src="img/Binah_Medicaster.webp?v=2" alt="Binah -Medicaster-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Void-"><img src="img/Plum_Void.webp?v=2" alt="Plum -Void-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Plum -Инсайт-"><img src="img/Plum_Insight.webp?v=2" alt="Plum -Инсайт-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Chiffon -Κρίμσον-"><img src="img/Chiffon_Crimson.webp?v=2" alt="Chiffon -Κρίμσον-" loading="lazy"></button>
+            <button class="avatar-tile" type="button" aria-label="View Lazuli -xi-"><img src="img/Lazuli_xi.webp?v=2" alt="Lazuli -xi- (41%)" loading="lazy"></button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <footer class="page-footer" data-i18n="footer">C.Tera</footer>
+  </main>
+
+  <dialog class="image-dialog" aria-label="Avatar preview">
+    <button class="dialog-close" type="button" aria-label="Close image">×</button>
+    <img src="" alt="">
+    <p class="dialog-caption"></p>
+  </dialog>
+  <p class="language-error" id="languageError" role="status" aria-live="polite"></p>
+</body>
+</html>
