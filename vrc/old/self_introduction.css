@@ -133,6 +133,9 @@ body.background-expanded .container {
   display: inline-block;
   vertical-align: middle;
 }
+.sns-icons .sns-icon[src$="/vrc.svg"] {
+  filter: brightness(0);
+}
 .mic-bar-bg {
   background: #222a;
   border-radius: 8px;

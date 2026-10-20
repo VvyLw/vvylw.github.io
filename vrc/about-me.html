@@ -6,7 +6,26 @@
   <meta name="theme-color" content="#fff3f8">
   <meta name="description" content="VvyLwの自己紹介とVRChatアバター">
   <title>About Me | VvyLw</title>
-  <link rel="stylesheet" href="about-me-1.css">
+  <style>
+    .intro-pending .page-shell {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .intro-pending .ambient-background {
+      opacity: 0;
+    }
+
+    .intro-pending .intro-screen {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: #000;
+    }
+  </style>
+  <link rel="stylesheet" href="about-me.css">
   <script src="about-me.js" defer></script>
 </head>
 <body class="intro-pending">

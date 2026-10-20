@@ -7,8 +7,7 @@ let backgroundSlideInterval;
 let isBackgroundExpanded = false;
 let backgroundTransitionVersion = 0;
 
-const hasLangPrefix = () => window.location.pathname.includes('/ja/') || window.location.pathname.includes('/en/');
-const getBgPath = (imagePath) => hasLangPrefix() ? `../${imagePath}` : imagePath;
+const getBgPath = (imagePath) => new URL(`../${imagePath}`, document.baseURI).href;
 const languageStorageKey = 'selfIntroductionLanguage';
 
 const loadBackgroundImages = async () => {

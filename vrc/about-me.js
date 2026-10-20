@@ -364,6 +364,8 @@ const animateHeroTitle = async () => {
     introScreenTitle.style.letterSpacing = heroTitleStyle.letterSpacing;
     document.body.classList.add('intro-pending');
     document.body.classList.remove('intro-revealing');
+    const contentGrid = document.querySelector('.content-grid');
+    contentGrid.style.visibility = 'hidden';
     switchButton.disabled = true;
     heroTitle.setAttribute('aria-label', finalTitle);
     heroTitle.textContent = finalTitle;
@@ -448,8 +450,9 @@ const animateHeroTitle = async () => {
             .then(() => {
                 if (animationGeneration !== heroAnimationGeneration) return;
                 document.body.classList.add('intro-profile-revealing');
+                contentGrid.style.removeProperty('visibility');
                 const revealAnimations = [
-                    ...document.querySelector('.content-grid').getAnimations(),
+                    ...contentGrid.getAnimations(),
                     ...document.querySelector('.page-footer').getAnimations(),
                 ];
                 return Promise.all(revealAnimations.map((animation) => animation.finished));
@@ -463,6 +466,7 @@ const animateHeroTitle = async () => {
                 if (animationGeneration !== heroAnimationGeneration) return;
                 console.error('Could not finish intro transition:', error);
                 introScreen.hidden = true;
+                contentGrid.style.removeProperty('visibility');
                 document.body.classList.remove(
                     'intro-pending',
                     'intro-revealing',
@@ -484,6 +488,7 @@ window.addEventListener('pageshow', async () => {
     await languageReady;
     animateHeroTitle().catch((error) => {
         console.error('Could not play intro animation:', error);
+        document.querySelector('.content-grid').style.removeProperty('visibility');
         document.body.classList.remove('intro-pending', 'intro-revealing');
         document.getElementById('introScreen').hidden = true;
         document.body.classList.remove(
