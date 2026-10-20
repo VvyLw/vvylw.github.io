@@ -1082,6 +1082,22 @@ body {
   box-shadow: 0 0 18px #00d9ff66, 0 0 25px #ff4fd833;
 }
 
+.avatar-tile.top img {
+  object-position: center top;
+}
+
+.avatar-tile.bottom img {
+  object-position: center bottom;
+}
+
+.avatar-tile.left img {
+  object-position: left center;
+}
+
+.avatar-tile.right img {
+  object-position: right center;
+}
+
 .page-footer {
   color: #78b8c8;
 }
