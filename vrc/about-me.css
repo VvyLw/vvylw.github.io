@@ -69,6 +69,11 @@ body {
   transform: translateY(18px);
 }
 
+.intro-pending .page-header > .eyebrow {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
 .intro-revealing .page-shell {
   visibility: visible;
   opacity: 1;
@@ -81,8 +86,8 @@ body.intro-pending.intro-revealing .page-shell {
   transform: translateY(18px);
 }
 
-.intro-revealing .page-header h1 {
-  visibility: hidden;
+body.intro-pending .ambient-background {
+  opacity: 0;
 }
 
 .ambient-background {
@@ -92,6 +97,7 @@ body.intro-pending.intro-revealing .page-shell {
   overflow: hidden;
   background: #fff6fa;
   cursor: zoom-in;
+  transition: opacity 1000ms ease;
 }
 
 .ambient-background::after {
@@ -116,6 +122,37 @@ body.intro-pending.intro-revealing .page-shell {
 
 .ambient-image.visible {
   opacity: 1;
+}
+
+body.intro-sequence-active .page-shell {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+body.intro-sequence-active .ambient-background {
+  transition-duration: 700ms;
+}
+
+body.intro-sequence-active .page-header > .eyebrow {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+body.intro-sequence-active .content-grid,
+body.intro-sequence-active .page-footer {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+body.intro-profile-revealing .content-grid,
+body.intro-profile-revealing .page-footer {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 450ms ease, transform 450ms ease;
 }
 
 button,
@@ -414,7 +451,11 @@ button {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #f4a8c9, #baa4e8);
-  transition: width 650ms ease;
+  transition: width 333ms ease;
+}
+
+.voice-meter.voice-language-transition {
+  transition-duration: 333ms;
 }
 
 .voice-card p {
@@ -748,12 +789,7 @@ body.background-expanded .page-shell {
   }
 
   .ambient-image {
-    transition: opacity 0.01ms;
-  }
-
-  .content-grid,
-  .page-footer {
-    transition: none;
+    transition-duration: 1s !important;
   }
 
   .page-shell,
@@ -761,5 +797,35 @@ body.background-expanded .page-shell {
   .intro-screen,
   .intro-screen.is-leaving {
     transition: none;
+  }
+
+  .intro-revealing .page-shell {
+    transform: none;
+    transition: opacity 300ms ease;
+  }
+
+  .voice-meter {
+    transition-duration: 650ms !important;
+  }
+
+  .voice-meter.voice-language-transition {
+    transition-duration: 650ms !important;
+  }
+
+  .ambient-background {
+    transition-duration: 300ms !important;
+  }
+
+  body.intro-profile-revealing .content-grid,
+  body.intro-profile-revealing .page-footer {
+    transition-duration: 300ms !important;
+  }
+
+  body.intro-sequence-active .ambient-background {
+    transition-duration: 300ms !important;
+  }
+
+  .page-header > .eyebrow {
+    transition-duration: 300ms !important;
   }
 }

@@ -10,6 +10,9 @@ const voiceMeter = document.querySelector('.voice-meter');
 const voiceTrack = document.querySelector('.voice-track');
 const voiceValue = document.querySelector('.voice-value');
 const reducedMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const voiceGaugeIntervalMs = 333;
+const voiceGaugeAnimationDuration = 333;
+const voiceLanguageTransitionDuration = 333;
 const japaneseTranslations = Object.fromEntries(
     Array.from(document.querySelectorAll('[data-i18n]'), (element) => [
         element.dataset.i18n,
@@ -25,6 +28,7 @@ let activeBackgroundLayer = 0;
 let currentBackgroundIndex = -1;
 let voiceAnimationFrame = 0;
 let voiceGaugeInterval;
+let voiceGaugeStartTimeout;
 let heroAnimationFrame = 0;
 let heroTransitionAnimations = [];
 let heroAnimationGeneration = 0;
@@ -134,20 +138,18 @@ const initializeBackgroundSlideshow = async () => {
     startBackgroundSlideshow();
 };
 
-const updateVoiceGauge = () => {
-    const percentage = Math.floor(Math.random() * 101);
+const animateVoiceGauge = (percentage, languageTransition = false) => {
+    window.cancelAnimationFrame(voiceAnimationFrame);
+    voiceMeter.classList.toggle('voice-language-transition', languageTransition);
+    if (languageTransition) {
+        void voiceMeter.offsetWidth;
+    }
     voiceMeter.style.width = `${percentage}%`;
     voiceTrack.setAttribute('aria-valuenow', String(percentage));
-    window.cancelAnimationFrame(voiceAnimationFrame);
 
     const startValue = Number.parseInt(voiceValue.textContent, 10) || 0;
-    if (reducedMotionPreference.matches) {
-        voiceValue.textContent = `${percentage}%`;
-        return;
-    }
-
     const startedAt = performance.now();
-    const duration = 650;
+    const duration = languageTransition ? voiceLanguageTransitionDuration : voiceGaugeAnimationDuration;
 
     const animateValue = (timestamp) => {
         const progress = Math.min((timestamp - startedAt) / duration, 1);
@@ -157,10 +159,16 @@ const updateVoiceGauge = () => {
 
         if (progress < 1) {
             voiceAnimationFrame = window.requestAnimationFrame(animateValue);
+        } else if (languageTransition) {
+            voiceMeter.classList.remove('voice-language-transition');
         }
     };
 
     voiceAnimationFrame = window.requestAnimationFrame(animateValue);
+};
+
+const updateVoiceGauge = () => {
+    animateVoiceGauge(Math.floor(Math.random() * 101));
 };
 
 const initializeVoiceGauge = () => {
@@ -169,17 +177,18 @@ const initializeVoiceGauge = () => {
 
 const setVoiceGaugeLanguage = (language) => {
     window.clearInterval(voiceGaugeInterval);
+    window.clearTimeout(voiceGaugeStartTimeout);
     window.cancelAnimationFrame(voiceAnimationFrame);
 
     if (language === 'en') {
-        voiceMeter.style.width = '1%';
-        voiceTrack.setAttribute('aria-valuenow', '1');
-        voiceValue.textContent = '1%';
+        animateVoiceGauge(1, true);
         return;
     }
 
-    updateVoiceGauge();
-    voiceGaugeInterval = window.setInterval(updateVoiceGauge, reducedMotionPreference.matches ? 2400 : 1200);
+    animateVoiceGauge(Math.floor(Math.random() * 101), true);
+    voiceGaugeStartTimeout = window.setTimeout(() => {
+        voiceGaugeInterval = window.setInterval(updateVoiceGauge, voiceGaugeIntervalMs);
+    }, voiceLanguageTransitionDuration);
 };
 
 const applyTranslations = (translations, language) => {
@@ -197,7 +206,9 @@ const applyTranslations = (translations, language) => {
 
     const heroTitle = document.querySelector('[data-i18n="heroTitle"]');
     heroTitle.setAttribute('aria-label', translations.heroTitle ?? heroTitle.dataset.jaTitle);
-    document.querySelector('[data-i18n="tagOther"]').hidden = language !== 'en';
+    document.querySelectorAll('.profile-tag').forEach((tag) => {
+        tag.hidden = language !== 'en';
+    });
     document.documentElement.lang = language;
     if (translations.pageTitle) document.title = translations.pageTitle;
     setVoiceGaugeLanguage(language);
@@ -334,9 +345,10 @@ const animateHeroTitle = async () => {
     const introScreenTitle = document.getElementById('introScreenTitle');
     const finalTitle = heroTitle.dataset.jaTitle;
     const scrambleCharacters = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛋᛏᛒᛖᛗᛚᛜᛞ!<>+*~';
-    const decodeDuration = 1500;
-    const transitionDuration = 900;
     const reducedMotion = reducedMotionPreference.matches;
+    const decodeDuration = 1500;
+    const titleTravelDuration = reducedMotion ? 200 : 300;
+    const eyebrowFadeDuration = reducedMotion ? 300 : 650;
     const animationGeneration = ++heroAnimationGeneration;
 
     window.cancelAnimationFrame(heroAnimationFrame);
@@ -346,18 +358,15 @@ const animateHeroTitle = async () => {
     introScreen.classList.remove('is-leaving');
     introScreenTitle.style.transform = '';
     introScreenTitle.textContent = 'ᚡᚡᚤᛚᚹ';
+    const heroTitleStyle = window.getComputedStyle(heroTitle);
+    introScreenTitle.style.fontFamily = heroTitleStyle.fontFamily;
+    introScreenTitle.style.fontWeight = heroTitleStyle.fontWeight;
+    introScreenTitle.style.letterSpacing = heroTitleStyle.letterSpacing;
     document.body.classList.add('intro-pending');
     document.body.classList.remove('intro-revealing');
     switchButton.disabled = true;
     heroTitle.setAttribute('aria-label', finalTitle);
     heroTitle.textContent = finalTitle;
-
-    if (reducedMotion) {
-        document.body.classList.remove('intro-pending');
-        introScreen.hidden = true;
-        switchButton.disabled = false;
-        return;
-    }
 
     const startedAt = performance.now();
     let lastRenderedAt = 0;
@@ -386,7 +395,6 @@ const animateHeroTitle = async () => {
         introScreenTitle.textContent = finalTitle;
         document.body.classList.add('intro-revealing');
         void document.querySelector('.page-shell').offsetWidth;
-        document.body.classList.remove('intro-pending');
 
         const startRect = introScreenTitle.getBoundingClientRect();
         const titleRange = document.createRange();
@@ -402,27 +410,65 @@ const animateHeroTitle = async () => {
                 { transform: 'translate(0, 0) scale(1, 1)' },
                 { transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})` },
             ],
-            { duration: transitionDuration, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)', fill: 'forwards' }
+            { duration: titleTravelDuration, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)', fill: 'forwards' }
         );
-        const screenAnimation = introScreen.animate(
-            [{ opacity: 1 }, { opacity: 0 }],
-            { duration: transitionDuration, easing: 'ease-out', fill: 'forwards' }
-        );
-        heroTransitionAnimations = [titleAnimation, screenAnimation];
+        heroTransitionAnimations = [titleAnimation];
 
-        Promise.all(heroTransitionAnimations.map((animation) => animation.finished))
+        titleAnimation.finished
             .then(() => {
                 if (animationGeneration !== heroAnimationGeneration) return;
                 introScreen.hidden = true;
                 introScreenTitle.style.transform = '';
-                document.body.classList.remove('intro-revealing');
+                document.body.classList.remove('intro-pending', 'intro-revealing');
+                document.body.classList.add('intro-sequence-active');
+                const eyebrow = document.querySelector('.page-header > .eyebrow');
+                const ambientBackground = document.querySelector('.ambient-background');
+                return new Promise((resolve, reject) => {
+                    window.requestAnimationFrame(() => {
+                        if (animationGeneration !== heroAnimationGeneration) {
+                            resolve();
+                            return;
+                        }
+
+                        const eyebrowAnimation = eyebrow.animate(
+                            [
+                                { opacity: 0, transform: 'translateY(8px)' },
+                                { opacity: 1, transform: 'translateY(0)' },
+                            ],
+                            { duration: eyebrowFadeDuration, easing: 'ease-out', fill: 'forwards' }
+                        );
+                        const ambientAnimations = ambientBackground.getAnimations();
+                        Promise.all([
+                            eyebrowAnimation.finished,
+                            ...ambientAnimations.map((animation) => animation.finished),
+                        ]).then(() => window.setTimeout(resolve, 150), reject);
+                    });
+                });
+            })
+            .then(() => {
+                if (animationGeneration !== heroAnimationGeneration) return;
+                document.body.classList.add('intro-profile-revealing');
+                const revealAnimations = [
+                    ...document.querySelector('.content-grid').getAnimations(),
+                    ...document.querySelector('.page-footer').getAnimations(),
+                ];
+                return Promise.all(revealAnimations.map((animation) => animation.finished));
+            })
+            .then(() => {
+                if (animationGeneration !== heroAnimationGeneration) return;
+                document.body.classList.remove('intro-sequence-active', 'intro-profile-revealing');
                 switchButton.disabled = false;
             })
             .catch((error) => {
                 if (animationGeneration !== heroAnimationGeneration) return;
                 console.error('Could not finish intro transition:', error);
                 introScreen.hidden = true;
-                document.body.classList.remove('intro-pending', 'intro-revealing');
+                document.body.classList.remove(
+                    'intro-pending',
+                    'intro-revealing',
+                    'intro-sequence-active',
+                    'intro-profile-revealing'
+                );
                 switchButton.disabled = false;
             });
     };
@@ -440,6 +486,10 @@ window.addEventListener('pageshow', async () => {
         console.error('Could not play intro animation:', error);
         document.body.classList.remove('intro-pending', 'intro-revealing');
         document.getElementById('introScreen').hidden = true;
+        document.body.classList.remove(
+            'intro-sequence-active',
+            'intro-profile-revealing'
+        );
         switchButton.disabled = false;
     });
 });
