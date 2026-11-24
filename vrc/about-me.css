@@ -414,10 +414,6 @@ button {
   white-space: nowrap;
 }
 
-.external-mark {
-  color: #c5a1b6;
-}
-
 .voice-card {
   margin-top: 16px;
   padding: 13px 14px;
@@ -982,10 +978,6 @@ body {
 
 .social-handle {
   color: #8aaebb;
-}
-
-.external-mark {
-  color: #ff71df;
 }
 
 .discord-icon {
